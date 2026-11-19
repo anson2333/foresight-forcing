@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Foresight Forcing F squared mark</title>
+  <desc id="desc">A pixel-grid letter F transitioning from cyan to violet with a superscript two.</desc>
+  <rect x="1" y="1" width="62" height="62" rx="12" fill="#111827" stroke="#334155" stroke-width="2"/>
+
+  <g transform="translate(10 10)">
+    <rect x="0" y="0" width="7" height="7" rx="1.5" fill="#21B3E8"/>
+    <rect x="9" y="0" width="7" height="7" rx="1.5" fill="#2E91DD"/>
+    <rect x="18" y="0" width="7" height="7" rx="1.5" fill="#4F6BD2"/>
+    <rect x="27" y="0" width="7" height="7" rx="1.5" fill="#7446C8"/>
+
+    <rect x="0" y="9" width="7" height="7" rx="1.5" fill="#28A8E4"/>
+    <rect x="9" y="9" width="7" height="7" rx="1.5" fill="#4974D4" opacity=".82"/>
+
+    <rect x="0" y="18" width="7" height="7" rx="1.5" fill="#328FDA"/>
+    <rect x="9" y="18" width="7" height="7" rx="1.5" fill="#5267D1"/>
+    <rect x="18" y="18" width="7" height="7" rx="1.5" fill="#7049CA"/>
+
+    <rect x="0" y="27" width="7" height="7" rx="1.5" fill="#4078D5"/>
+    <rect x="9" y="27" width="7" height="7" rx="1.5" fill="#6555CD" opacity=".74"/>
+
+    <rect x="0" y="36" width="7" height="7" rx="1.5" fill="#5264D0"/>
+  </g>
+
+  <path d="M43 30.5c0-4.7 2.9-7.5 7.4-7.5 4.2 0 7 2.4 7 6 0 2.8-1.6 4.8-4.8 7.1l-3 2.1h8.2v4.8H42.9v-3.8l6.4-5c2.1-1.7 3-2.8 3-4.2 0-1.3-.8-2.2-2.1-2.2-1.6 0-2.4 1-2.5 3.2l-4.7-.5z" fill="#F8FAFC" transform="translate(17 -7) scale(.68)"/>
+  <circle cx="54" cy="50" r="2.5" fill="#D75B44"/>
+</svg>

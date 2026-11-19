@@ -1,0 +1,409 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Foresight Forcing learns spatial transition queries from correspondence-aligned changes in 3D teacher features for robotic manipulation.">
+  <meta name="author" content="Mishuo Han, Zhixuan Liang, Zhaoyuan Wan, Wendi Chen, Jiarui Chen, Xinkai Wang, Yue Ma, Yu Zhou, Junting Chen, Yao Mu, Jun Lv, Chuan Wen, Cewu Lu">
+  <meta name="theme-color" content="#111827">
+  <title>Foresight Forcing | Spatial Foresight for Robotic Manipulation</title>
+  <link rel="icon" type="image/svg+xml" href="assets/brand/f2-mark.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <section class="intro-demo" data-intro-demo data-state="idle" aria-label="Foresight Forcing concept overview">
+    <div class="intro-shell">
+      <div class="intro-topbar">
+        <a class="intro-brand" href="#top" aria-label="Foresight Forcing home">
+          <img src="assets/brand/f2-mark.svg" alt="" width="42" height="42">
+          <span>Foresight Forcing</span>
+        </a>
+        <button class="intro-skip" type="button" data-intro-skip>Skip intro</button>
+      </div>
+
+      <div class="intro-main">
+        <div class="concept-stage" data-intro-visual>
+          <canvas class="concept-canvas" data-concept-canvas role="img" aria-label="Concept animation showing current and future observations jointly encoded by VGGT, their feature difference supervising spatial queries without directly producing actions, and current features plus predicted spatial foresight conditioning the Action Expert"></canvas>
+          <div class="concept-legend" aria-hidden="true">
+            <span><i class="legend-current"></i>Current-only path</span>
+            <span><i class="legend-target"></i>Training-only teacher</span>
+            <span><i class="legend-foresight"></i>Spatial query</span>
+          </div>
+        </div>
+
+        <div class="intro-copy">
+          <p class="intro-kicker">The core idea</p>
+          <h1>Learn the change. Predict it from now.</h1>
+          <p class="intro-description">Paired observations reveal a spatial change in frozen 3D features. That change supervises <em>Z<sub>Δ</sub></em>; at inference, the predicted query joins current visual features to guide the Action Expert.</p>
+          <button class="intro-play" type="button" data-intro-play><span aria-hidden="true">▶</span>Play concept</button>
+          <div class="intro-progress" data-intro-progress aria-hidden="true"><i></i></div>
+          <div class="intro-mode"><i></i><span data-intro-status>Ready · click to play</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <header class="site-header" data-header>
+    <nav class="nav-shell" aria-label="Main navigation">
+      <a class="brand" href="#top" aria-label="Foresight Forcing home">
+        <img class="brand-mark" src="assets/brand/f2-mark.svg" alt="" width="42" height="42">
+        <span>Foresight Forcing</span>
+      </a>
+      <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links" data-nav-toggle>
+        <span class="sr-only">Toggle navigation</span>
+        <span></span><span></span>
+      </button>
+      <div class="nav-links" id="nav-links" data-nav-links>
+        <a href="#insight">Insight</a>
+        <a href="#method">Method</a>
+        <a href="#results">Results</a>
+        <a href="#real-world">Real world</a>
+        <a href="#citation">Citation</a>
+        <button class="intro-replay" type="button" data-intro-replay aria-label="Replay method intro" title="Replay method intro">↻</button>
+      </div>
+    </nav>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="hero-inner">
+        <div class="hero-copy">
+          <p class="eyebrow">World Action Models · 3D Transition Learning</p>
+          <h1>Foresight<br><em>Forcing</em></h1>
+          <p class="hero-subtitle">Learning Spatial Foresight for Robotic Manipulation</p>
+          <div class="hero-people" aria-label="Authors and affiliations">
+          <p class="hero-authors">
+            <a href="https://openreview.net/profile?id=~Mishuo_Han1">Mishuo Han</a>,
+            <a href="https://openreview.net/profile?id=~Zhixuan_Liang2">Zhixuan Liang</a>,
+            <a href="https://openreview.net/profile?id=~Zhaoyuan_Wan2">Zhaoyuan Wan</a>,
+            <a href="https://openreview.net/profile?id=~Wendi_Chen1">Wendi Chen</a>,
+            <a href="https://openreview.net/profile?id=~Jiarui_Chen4">Jiarui Chen</a>,
+            <a href="https://openreview.net/profile?id=~Xinkai_Wang1">Xinkai Wang</a>,
+            <a href="https://openreview.net/profile?id=~Yue_Ma2">Yue Ma</a>,
+            <a href="https://openreview.net/profile?id=~Yu_Zhou21">Yu Zhou</a>,
+            <a href="https://openreview.net/profile?id=~Junting_Chen2">Junting Chen</a>,
+            <a href="https://openreview.net/profile?id=~Yao_Mu1">Yao Mu</a>,
+            <a href="https://openreview.net/profile?id=~Jun_Lv2">Jun Lv</a>,
+            <a href="https://openreview.net/profile?id=~Chuan_Wen1">Chuan Wen</a>,
+            <a href="https://openreview.net/profile?id=~Cewu_Lu3">Cewu Lu</a>
+          </p>
+          <ol class="hero-affiliations">
+            <li><a href="https://www.sjtu.edu.cn/">Shanghai Jiao Tong University</a><span>sjtu.edu.cn</span></li>
+            <li><a href="https://www.princeton.edu/">Princeton University</a><span>princeton.edu</span></li>
+            <li><a href="https://www.sii.edu.cn/">Shanghai Innovation Institute</a><span>sii.edu.cn</span></li>
+            <li><a href="https://hkust.edu.hk/">The Hong Kong University of Science and Technology</a><span>ust.hk</span></li>
+            <li><a href="https://www.nus.edu.sg/">National University of Singapore</a><span>u.nus.edu</span></li>
+          </ol>
+          </div>
+          <p class="hero-summary">
+            We distill correspondence-aligned changes in a pretrained 3D feature space into spatial transition queries that directly condition action generation.
+          </p>
+          <div class="hero-actions" aria-label="Project links">
+            <span class="button button-primary is-disabled" aria-disabled="true">Paper · forthcoming</span>
+            <span class="button button-secondary is-disabled" aria-disabled="true">Code · forthcoming</span>
+            <a class="button button-quiet" href="#citation">BibTeX</a>
+          </div>
+          <div class="hero-metrics" aria-label="Headline results">
+            <div><strong>95.01%</strong><span>RoboTwin 2.0 Full</span></div>
+            <div><strong>84.5%</strong><span>LIBERO-Plus</span></div>
+            <div><strong>85.8%</strong><span>Real-world mean</span></div>
+            <div><strong>+4.1%</strong><span>Eager latency</span></div>
+          </div>
+        </div>
+        <div class="hero-visual" aria-label="Method summary graphic">
+          <div class="hero-visual-top"><span>From scene change</span><b>to action</b></div>
+          <div class="hero-visual-field">
+            <i class="field-grid"></i>
+            <i class="field-object object-current"></i>
+            <i class="field-object object-future"></i>
+            <i class="field-vector vector-one"></i>
+            <i class="field-vector vector-two"></i>
+            <i class="field-vector vector-three"></i>
+            <span class="field-label label-current">O<sub>t</sub></span>
+            <span class="field-label label-future">O<sub>t+H</sub></span>
+            <span class="field-label label-delta">Y<sub>Δ</sub></span>
+          </div>
+          <div class="hero-visual-route">
+            <span>Y<sub>Δ</sub></span><i></i><strong>Z<sub>Δ</sub></strong><i></i><span class="route-action">A<sub>t:t+H−1</sub></span>
+          </div>
+          <p>Training reveals the change. Deployment predicts it from the current view.</p>
+        </div>
+      </div>
+      <a class="hero-next" href="#insight" aria-label="Continue to key insight">
+        <span>Core idea</span>
+        <span aria-hidden="true">↓</span>
+      </a>
+    </section>
+
+    <section class="section insight-section" id="insight">
+      <div class="section-inner">
+        <div class="section-heading heading-wide">
+          <p class="section-kicker">The key insight</p>
+          <h2>Actions are defined by what needs to change.</h2>
+          <p>
+            Future RGB prediction mixes task-relevant motion with appearance, background, and viewpoint. Foresight Forcing isolates a denser learning signal: how aligned 3D teacher features change from the current observation to the action horizon.
+          </p>
+        </div>
+
+        <div class="idea-flow" aria-label="Foresight Forcing in three steps">
+          <article class="idea-step">
+            <span class="step-index">01</span>
+            <div class="step-icon icon-align" aria-hidden="true"><i></i><i></i><i></i></div>
+            <h3>Align</h3>
+            <p>Warp current and future observations onto corresponding image locations.</p>
+          </article>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <article class="idea-step">
+            <span class="step-index">02</span>
+            <div class="step-icon icon-delta" aria-hidden="true"><i></i><b>Δ</b><i></i></div>
+            <h3>Distill change</h3>
+            <p>Subtract frozen VGGT patch features to form spatial transition targets.</p>
+          </article>
+          <div class="flow-arrow" aria-hidden="true">→</div>
+          <article class="idea-step">
+            <span class="step-index">03</span>
+            <div class="step-icon icon-action" aria-hidden="true"><i></i><i></i><i></i></div>
+            <h3>Condition action</h3>
+            <p>Predict transition queries from the current inputs and route them to the Action Expert.</p>
+          </article>
+        </div>
+
+        <figure class="wide-figure teaser-figure figure-breakout figure-breakout-wide">
+          <div class="figure-toolbar">
+            <span>Foresight Forcing at a glance</span>
+            <button class="icon-button" type="button" data-expand-image="assets/images/teaser.svg" aria-label="Expand project overview" title="Expand project overview">↗</button>
+          </div>
+          <img src="assets/images/teaser.svg" alt="Overview of Foresight Forcing, including transition supervision, policy inference, benchmarks, and real-world tasks" width="1420" height="632" loading="eager">
+          <figcaption>Foresight Forcing at a glance: transition supervision is used only during training; deployment requires no future observation or 3D teacher.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section method-section" id="method">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="section-kicker">How it works</p>
+          <h2>Spatial foresight, learned once and used directly.</h2>
+          <p>The transition pathway is trained with future observations, but must predict from current observations, language, and proprioception at deployment.</p>
+        </div>
+
+        <div class="method-principles">
+          <article>
+            <span class="principle-label">Training signal</span>
+            <h3>Correspondence-aligned feature deltas</h3>
+            <p>A frozen VGGT produces patch features for aligned current and future observations. Their difference supervises the direction and scale of spatial change.</p>
+          </article>
+          <article>
+            <span class="principle-label">Representation</span>
+            <h3>Frame-matched transition queries</h3>
+            <p>Each query occupies a visual token location. A shared updater repeatedly reads current visual and conditioning states while remaining isolated from future tokens.</p>
+          </article>
+          <article>
+            <span class="principle-label">Deployment</span>
+            <h3>Foresight without a teacher</h3>
+            <p>The Action Expert attends to predicted transition queries and current visual features. Future observations, VGGT, and distillation heads are removed.</p>
+          </article>
+        </div>
+
+        <figure class="wide-figure method-figure figure-breakout">
+          <div class="figure-toolbar">
+            <span>F<sup>2</sup> architecture</span>
+            <button class="icon-button" type="button" data-expand-image="assets/images/method-overview.svg" aria-label="Expand architecture figure" title="Expand figure">↗</button>
+          </div>
+          <img src="assets/images/method-overview.svg" alt="Foresight Forcing architecture with FLUX.2 backbone, shared query updater, Action Expert, and VGGT geometry supervision" width="1103" height="586" loading="lazy">
+          <figcaption>Future observations and VGGT appear only on the supervision side. The current-input pathway predicts transition queries at both training and inference.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <section class="section evidence-section" id="evidence">
+      <div class="section-inner">
+        <div class="section-heading">
+          <p class="section-kicker">Inside the representation</p>
+          <h2>The queries localize how the scene should evolve.</h2>
+          <p>Readouts show correspondence with teacher feature changes and recover future image-space displacement from frozen transition queries.</p>
+        </div>
+
+        <div class="evidence-stack">
+          <figure class="evidence-figure">
+            <div class="evidence-copy">
+              <div>
+                <span class="evidence-index">A</span>
+                <h3>Feature-change readout</h3>
+              </div>
+              <p>Predicted response maps recover the same task-relevant regions as the aligned VGGT target, including the moving arm and interaction geometry.</p>
+            </div>
+            <div class="evidence-image-viewport">
+              <div class="evidence-image-toolbar"><span>VGGT target → <em>Z<sub>Δ</sub> prediction</em></span><button class="icon-button" type="button" data-expand-image="assets/images/feature-readout.svg" aria-label="Expand feature-change readout" title="Expand readout">↗</button></div>
+              <img src="assets/images/feature-readout.svg" alt="VGGT transition targets compared with transition-query predictions for mug transfer and drawer opening" width="485" height="104" loading="lazy">
+            </div>
+          </figure>
+
+          <figure class="evidence-figure">
+            <div class="evidence-copy">
+              <div>
+                <span class="evidence-index">B</span>
+                <h3>Future-point readout</h3>
+              </div>
+              <p>A probe trained on frozen queries predicts future image-space displacement near the observed future, while ImageWAM provides a weaker spatial readout.</p>
+            </div>
+            <div class="evidence-image-viewport">
+              <div class="evidence-image-toolbar"><span>Frozen <em>Z<sub>Δ</sub></em> probe · 10 px scale</span><button class="icon-button" type="button" data-expand-image="assets/images/point-readout.svg" aria-label="Expand future-point readout" title="Expand readout">↗</button></div>
+              <img src="assets/images/point-readout.svg" alt="Future-point displacement predictions from Foresight Forcing, ImageWAM, and observed futures" width="485" height="104" loading="lazy">
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section results-section" id="results">
+      <div class="section-inner">
+        <div class="results-intro">
+          <div class="section-heading">
+            <p class="section-kicker">Simulation benchmarks</p>
+            <h2>Strong control across standard and shifted scenes.</h2>
+          </div>
+          <p class="results-note">Success rate (%). Select a benchmark to inspect the reported comparison.</p>
+        </div>
+
+        <div class="results-explorer">
+          <div class="result-tabs" role="tablist" aria-label="Simulation benchmarks">
+            <button class="result-tab is-active" type="button" role="tab" aria-selected="true" aria-controls="result-panel" data-result-tab="robotwin">RoboTwin Full</button>
+            <button class="result-tab" type="button" role="tab" aria-selected="false" aria-controls="result-panel" data-result-tab="libero-plus">LIBERO-Plus</button>
+            <button class="result-tab" type="button" role="tab" aria-selected="false" aria-controls="result-panel" data-result-tab="c2r">RoboTwin C2R</button>
+            <button class="result-tab" type="button" role="tab" aria-selected="false" aria-controls="result-panel" data-result-tab="libero">LIBERO</button>
+          </div>
+
+          <div class="result-panel" id="result-panel" role="tabpanel" aria-live="polite">
+            <div class="result-summary">
+              <p data-result-label>RoboTwin 2.0 Full · Average</p>
+              <strong data-result-score>95.01%</strong>
+              <span data-result-detail>50 dual-arm tasks, clean and randomized evaluation</span>
+            </div>
+            <div class="bar-chart" data-result-chart aria-label="Benchmark comparison bar chart"></div>
+          </div>
+        </div>
+
+        <div class="ablation-band">
+          <div class="ablation-copy">
+            <p class="section-kicker">Controlled analysis</p>
+            <h3>Feature deltas outperform single-frame targets.</h3>
+            <p>On LIBERO-Plus, delta supervision reaches 84.5%, compared with 83.2% for current features, 81.2% for future features, and 82.3% without distillation.</p>
+          </div>
+          <div class="ablation-bars" aria-label="Supervision target ablation">
+            <div><span>F<sup>2</sup> · delta</span><i style="--value: 84.5%"></i><b>84.5</b></div>
+            <div><span>Current</span><i style="--value: 83.2%"></i><b>83.2</b></div>
+            <div><span>No distill.</span><i style="--value: 82.3%"></i><b>82.3</b></div>
+            <div><span>Future</span><i style="--value: 81.2%"></i><b>81.2</b></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section real-section" id="real-world">
+      <div class="section-inner">
+        <div class="real-header">
+          <div class="section-heading">
+            <p class="section-kicker">Physical manipulation</p>
+            <h2>Six tasks, one jointly trained policy.</h2>
+            <p>Foresight Forcing is evaluated on long-horizon bimanual tasks spanning rigid objects, articulated tools, deformable cloth, and sequential placement.</p>
+          </div>
+          <div class="real-score">
+            <strong>85.8%</strong>
+            <span>mean task score</span>
+          </div>
+        </div>
+
+        <figure class="real-overview">
+          <img src="assets/images/real-world-overview.png" alt="The six real-world evaluation tasks: cup stacking, towel folding, egg transfer, breakfast preparation, tool stowing, and size sorting" width="733" height="462" loading="lazy">
+          <figcaption>Representative front-view observations from the six real-world tasks.</figcaption>
+        </figure>
+
+        <div class="task-strip" aria-label="Real-world tasks">
+          <span>Cup stacking</span>
+          <span>Towel folding</span>
+          <span>Egg transfer</span>
+          <span>Breakfast preparation</span>
+          <span>Tool stowing</span>
+          <span>Size sorting</span>
+        </div>
+        <p class="media-status"><span aria-hidden="true"></span> Dual-view rollout videos will accompany the arXiv release.</p>
+      </div>
+    </section>
+
+    <section class="section efficiency-section" id="efficiency">
+      <div class="section-inner efficiency-grid">
+        <div class="section-heading">
+          <p class="section-kicker">Inference efficiency</p>
+          <h2>Training-only supervision, modest deployment cost.</h2>
+          <p>VGGT and the future observation are discarded at inference. Only the learned transition-query pathway remains.</p>
+        </div>
+        <div class="latency-compare" aria-label="Inference latency comparison">
+          <div class="latency-row baseline">
+            <span>ImageWAM</span>
+            <i><b style="width: 96.1%"></b></i>
+            <strong>187.41 ms</strong>
+          </div>
+          <div class="latency-row ours">
+            <span>F<sup>2</sup></span>
+            <i><b style="width: 100%"></b></i>
+            <strong>195.01 ms</strong>
+          </div>
+          <p>Median latency per 16-action chunk · H200 · BF16 · 10 denoising steps</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section citation-section" id="citation">
+      <div class="section-inner citation-grid">
+        <div>
+          <p class="section-kicker">Citation</p>
+          <h2>Foresight Forcing</h2>
+          <p class="citation-note">Preprint · arXiv identifier forthcoming.</p>
+        </div>
+        <div class="bibtex-shell">
+          <button class="copy-button" type="button" data-copy-bibtex>Copy BibTeX</button>
+          <pre><code id="bibtex">@article{foresightforcing2026,
+  title   = {Foresight Forcing: Learning Spatial Foresight
+             for Robotic Manipulation},
+  author  = {Han, Mishuo and Liang, Zhixuan and Wan, Zhaoyuan and
+             Chen, Wendi and Chen, Jiarui and Wang, Xinkai and
+             Ma, Yue and Zhou, Yu and Chen, Junting and Mu, Yao and
+             Lv, Jun and Wen, Chuan and Lu, Cewu},
+  journal = {arXiv preprint},
+  year    = {2026}
+}</code></pre>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div>
+      <a class="brand footer-brand" href="#top"><img class="brand-mark" src="assets/brand/f2-mark.svg" alt="" width="42" height="42"><span>Foresight Forcing</span></a>
+      <p>Learning Spatial Foresight for Robotic Manipulation</p>
+    </div>
+    <a href="#top">Back to top ↑</a>
+  </footer>
+
+  <dialog class="image-dialog" data-image-dialog aria-label="Expanded figure">
+    <div class="dialog-tools">
+      <button type="button" data-dialog-zoom-out aria-label="Zoom out" title="Zoom out">−</button>
+      <button type="button" data-dialog-zoom-reset aria-label="Reset zoom" title="Reset zoom">↺</button>
+      <button type="button" data-dialog-zoom-in aria-label="Zoom in" title="Zoom in">+</button>
+      <button class="dialog-close" type="button" data-dialog-close aria-label="Close expanded figure" title="Close">×</button>
+    </div>
+    <div class="dialog-viewport">
+      <img src="" alt="Expanded paper figure" data-dialog-image>
+    </div>
+  </dialog>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
