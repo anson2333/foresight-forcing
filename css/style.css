@@ -1900,16 +1900,80 @@ body.intro-open { overflow: hidden; }
   font-weight: 500;
 }
 
+.stage-scrubber {
+  position: relative;
+  padding: 11px 16px 9px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(13, 20, 33, 0.98);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.stage-scrubber:focus-visible {
+  outline: 2px solid #74c4ff;
+  outline-offset: -2px;
+}
+
+.scrubber-track {
+  position: relative;
+  height: 6px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.scrubber-tick {
+  position: absolute;
+  top: -3px;
+  width: 1.5px;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.24);
+  pointer-events: none;
+}
+
+.scrubber-fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 0%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, #5cc4ff 0%, #8f72ff 58%, #4ae6ff 100%);
+  box-shadow: 0 0 12px rgba(116, 196, 255, 0.45);
+  pointer-events: none;
+}
+
+.scrubber-thumb {
+  position: absolute;
+  top: 50%;
+  left: 0%;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 2px solid #74c4ff;
+  box-shadow: 0 0 14px rgba(116, 196, 255, 0.85);
+  transform: translate(-50%, -50%);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  pointer-events: none;
+}
+
+.stage-scrubber:hover .scrubber-thumb,
+.stage-scrubber.is-scrubbing .scrubber-thumb {
+  transform: translate(-50%, -50%) scale(1.22);
+  box-shadow: 0 0 18px rgba(154, 118, 255, 0.95);
+}
+
 .stage-tabs {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
   background: rgba(13, 20, 33, 0.96);
 }
 
 .stage-tab {
   position: relative;
-  padding: 13px 14px 15px;
+  padding: 11px 14px 13px;
   border: 0;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   color: #8c9bb1;
@@ -1923,7 +1987,7 @@ body.intro-open { overflow: hidden; }
 
 .stage-tab:last-child { border-right: 0; }
 .stage-tab:hover { color: #e2eaf6; background: rgba(255, 255, 255, 0.03); }
-.stage-tab.is-active { color: #ffffff; background: rgba(116, 196, 255, 0.08); }
+.stage-tab.is-active { color: #ffffff; background: rgba(116, 196, 255, 0.09); }
 
 .stage-tab b {
   color: #62748c;
@@ -1931,16 +1995,6 @@ body.intro-open { overflow: hidden; }
   font-variant-numeric: tabular-nums;
 }
 .stage-tab.is-active b { color: #74c4ff; }
-
-.stage-tab i {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  height: 2.5px;
-  width: 0%;
-  background: linear-gradient(90deg, #68c1ff, #a97aef);
-  transition: width 80ms linear;
-}
 
 /* ==========================================================================
    Real-World Rollout Video Gallery & Benchmark Table

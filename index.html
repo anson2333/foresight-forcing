@@ -128,23 +128,33 @@
                   <span><i class="swatch-delta"></i>Measured VGGT Δ</span>
                   <span><i class="swatch-query"></i>Spatial query Z<sub>Δ</sub></span>
                 </div>
-                <span class="stage-hint">Drag to orbit 3D · 7,884 measured RoboTwin points</span>
+                <span class="stage-hint" data-stage-hint>Drag to orbit 3D · 7,884 measured RoboTwin points</span>
               </div>
+            </div>
+          </div>
+
+          <div class="stage-scrubber" data-stage-scrubber role="slider" tabindex="0" aria-label="Animation timeline" aria-valuemin="0" aria-valuemax="100" aria-valuenow="2">
+            <div class="scrubber-track">
+              <span class="scrubber-tick" style="left: 22%" aria-hidden="true"></span>
+              <span class="scrubber-tick" style="left: 48%" aria-hidden="true"></span>
+              <span class="scrubber-tick" style="left: 74%" aria-hidden="true"></span>
+              <div class="scrubber-fill" data-stage-fill></div>
+              <div class="scrubber-thumb" data-stage-thumb></div>
             </div>
           </div>
 
           <div class="stage-tabs" role="tablist" aria-label="Concept animation stages">
             <button class="stage-tab is-active" type="button" role="tab" aria-selected="true" data-stage-select="0">
-              <span><b>01</b> 2D Observation</span><i></i>
+              <span><b>01</b> 2D Observation</span>
             </button>
             <button class="stage-tab" type="button" role="tab" aria-selected="false" data-stage-select="1">
-              <span><b>02</b> 3D Point Cloud</span><i></i>
+              <span><b>02</b> 3D Point Cloud</span>
             </button>
             <button class="stage-tab" type="button" role="tab" aria-selected="false" data-stage-select="2">
-              <span><b>03</b> VGGT Feature Δ</span><i></i>
+              <span><b>03</b> VGGT Feature Δ</span>
             </button>
             <button class="stage-tab" type="button" role="tab" aria-selected="false" data-stage-select="3">
-              <span><b>04</b> Spatial Queries Z<sub>Δ</sub></span><i></i>
+              <span><b>04</b> Spatial Queries Z<sub>Δ</sub></span>
             </button>
           </div>
         </div>

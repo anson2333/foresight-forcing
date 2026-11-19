@@ -34,9 +34,10 @@
       id: 3,
       code: '04',
       short: 'Spatial Queries Z_Δ',
-      badge: 'STAGE 04 · FORESIGHT QUERIES Z<sub>Δ</sub> → ACTION',
-      title: 'Predict spatial foresight from O<sub>t</sub> alone',
-      detail: 'VGGT and O<sub>t+H</sub> are discarded at deployment. Predicted Z<sub>Δ</sub> queries carry the anticipated 3D motion field to the Action Expert.'
+      badge: 'STAGE 04 · DEPLOYMENT CONCEPT Z<sub>Δ</sub> → ACTION (SCHEMATIC)',
+      title: 'Anticipate 3D motion from O<sub>t</sub> alone',
+      detail: 'Schematic: solid arm shows current input O<sub>t</sub>; the sparse cyan hologram marks anticipated pose O<sub>t+H</sub> bridged by Z<sub>Δ</sub> motion streamlines (teacher removed).',
+      hint: 'Drag to orbit 3D · Solid O<sub>t</sub> → sparse foresight ghost O<sub>t+H</sub> (schematic)'
     }
   ];
 
@@ -115,6 +116,9 @@
     uniform float uDeltaMix;
     uniform float uScanX;
     uniform float uQueryMix;
+    uniform float uGhostPass;
+    uniform float uGhostT;
+    uniform float uGhostAlpha;
     uniform float uTime;
     uniform float uPointScale;
 
@@ -139,6 +143,33 @@
       bool isMoving = mod(floor(aFlags / 2.0), 2.0) >= 0.5;
       bool inFrame = mod(floor(aFlags / 4.0), 2.0) >= 0.5;
 
+      // Holographic foresight target ghost pass (single airy sparse hologram at O_{t+H})
+      if (uGhostPass > 0.5) {
+        // Sparsely subsample 1-in-3 points so the ghost reads as a clean see-through hologram, never a dense wall
+        if (!isMoving || (gl_VertexID % 3) != 0) {
+          gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
+          gl_PointSize = 0.0;
+          vAlpha = 0.0;
+          vGlow = 0.0;
+          vColor = vec3(0.0);
+          return;
+        }
+        vec3 gPos = mix(aCurPos, aFutPos, uGhostT);
+        // Subtle breathing pulse
+        float pulse = 0.88 + 0.12 * sin(uTime * 2.6 + gPos.y * 8.0);
+        vec3 gCol = mix(vec3(0.42, 0.78, 1.0), vec3(0.68, 0.56, 1.0), 0.35);
+        vColor = gCol;
+        vAlpha = uGhostAlpha * pulse * (0.65 + 0.35 * aDelta);
+        vGlow = 0.25 * aDelta;
+
+        vec4 gClip = uViewProj * vec4(gPos, 1.0);
+        gl_Position = gClip;
+        float gDist = max(0.35, gClip.w);
+        float gSize = 3.2;
+        gl_PointSize = clamp((gSize * uPointScale) / gDist, 1.6, 11.0);
+        return;
+      }
+
       // Subtle organic radial stagger during 2D -> 3D lift
       float radial = length(aImgPos.xz) * 0.22;
       float liftT = clamp((uUnproject * 1.24 - radial), 0.0, 1.0);
@@ -148,33 +179,26 @@
       vec3 p3d = mix(aCurPos, aFutPos, uMorph);
       vec3 pos = mix(aImgPos, p3d, liftT);
 
-      // Gentle breathing pulse on high-delta moving points during foresight stage
-      if (aDelta > 0.45 && uQueryMix > 0.01) {
-        float wave = sin(uTime * 3.4 + pos.x * 9.0 + pos.y * 7.0) * 0.004 * uQueryMix * aDelta;
-        pos.y += wave;
-      }
-
       // Scan wave mask across X for smooth VGGT residual reveal
       float scanMask = smoothstep(uScanX + 0.14, uScanX - 0.06, pos.x);
       float localDeltaMix = uDeltaMix * scanMask;
       // Thin bright scan line highlight right at uScanX
       float scanLine = exp(-pow((pos.x - uScanX) * 16.0, 2.0)) * uDeltaMix * (1.0 - smoothstep(0.95, 1.35, uScanX));
 
-      // Color blend: real RGB -> VGGT residual heatmap -> cool deployment + violet/coral query accent
+      // Color blend: real RGB -> VGGT residual heatmap -> solid O_t deployment scene
       vec3 rgbCol = pow(aRgb, vec3(0.94));
       // Slight contrast lift so dark robot arm reads cleanly on dark canvas
-      rgbCol = mix(rgbCol, vec3(0.75, 0.83, 0.94), isTable ? 0.08 : 0.05);
+      rgbCol = mix(rgbCol, vec3(0.75, 0.83, 0.94), isTable ? 0.08 : 0.06);
       vec3 dCol = deltaPalette(aDelta);
 
-      // In query stage, keep current scene subtly colored with violet-tinted foresight glow on active region
-      vec3 qCol = mix(
-        mix(rgbCol * 0.72, vec3(0.28, 0.39, 0.52), 0.45),
-        mix(vec3(0.70, 0.48, 1.0), vec3(0.38, 0.86, 1.0), clamp((aDelta - 0.45) * 1.8, 0.0, 1.0)),
-        smoothstep(0.24, 0.72, aDelta)
-      );
+      // In Stage 4 (deployment concept), keep solid current arm O_t crisp & natural so the
+      // gliding violet-cyan foresight ghost (O_t -> O_{t+H}) stands out with unmistakable contrast.
+      vec3 qCol = isMoving
+        ? mix(rgbCol, vec3(0.78, 0.88, 1.0), 0.22)
+        : mix(rgbCol * 0.65, vec3(0.28, 0.39, 0.52), 0.52);
 
       vec3 col = mix(rgbCol, dCol, localDeltaMix);
-      col = mix(col, qCol, uQueryMix * 0.85);
+      col = mix(col, qCol, uQueryMix * 0.92);
       col += vec3(0.35, 0.82, 1.0) * scanLine * 0.65;
 
       // Alpha & visibility
@@ -186,10 +210,11 @@
       if (!inFrame) {
         baseAlpha *= smoothstep(0.08, 0.45, uMorph + uUnproject * 0.65);
       }
-      // Dim static clutter during delta & query emphasis so active change pops
-      float clutterDim = mix(1.0, isTable ? 0.26 : 0.44, max(localDeltaMix, uQueryMix * 0.8) * (1.0 - smoothstep(0.18, 0.48, aDelta)));
+      // Dim static clutter during delta & query emphasis so solid O_t arm + ghost pop cleanly
+      float activeKeep = isMoving ? 1.0 : smoothstep(0.18, 0.48, aDelta);
+      float clutterDim = mix(1.0, isTable ? 0.26 : 0.42, max(localDeltaMix, uQueryMix * 0.88) * (1.0 - activeKeep));
       vAlpha = baseAlpha * clutterDim;
-      vGlow = clamp((aDelta - 0.38) * 1.7, 0.0, 1.0) * max(localDeltaMix, uQueryMix);
+      vGlow = clamp((aDelta - 0.38) * 1.7, 0.0, 1.0) * localDeltaMix;
       vColor = col;
 
       vec4 clip = uViewProj * vec4(pos, 1.0);
@@ -339,6 +364,7 @@
       this.badgeEl = root.querySelector('[data-stage-badge]');
       this.titleEl = root.querySelector('[data-stage-title]');
       this.detailEl = root.querySelector('[data-stage-detail]');
+      this.hintEl = root.querySelector('[data-stage-hint]');
       this.stageButtons = Array.from(root.querySelectorAll('[data-stage-select]'));
       this.playBtn = root.querySelector('[data-stage-toggle]');
       this.resetBtn = root.querySelector('[data-stage-reset]');
@@ -346,11 +372,16 @@
       this.zoomOutBtn = root.querySelector('[data-stage-zoom-out]');
       this.thumbCurrent = root.querySelector('[data-thumb-current]');
       this.thumbFuture = root.querySelector('[data-thumb-future]');
-      this.progressBars = this.stageButtons.map((b) => b.querySelector('i'));
+      this.scrubber = root.querySelector('[data-stage-scrubber]');
+      this.scrubberFill = root.querySelector('[data-stage-fill]');
+      this.scrubberThumb = root.querySelector('[data-stage-thumb]');
 
       this.cycleDuration = 16500; // ms for full 4-stage loop
       this.progress = 0.02;
+      this.animTime = 1.12; // Dedicated animation clock that freezes in place on pause
       this.playing = true;
+      this.scrubbing = false;
+      this.wasPlayingBeforeScrub = false;
       this.activeStage = -1;
       this.reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (this.reducedMotion) {
@@ -378,14 +409,71 @@
     }
 
     initControls() {
-      // Stage tabs
+      // Stage tabs (chapter jump shortcuts)
       this.stageButtons.forEach((btn, idx) => {
         btn.addEventListener('click', () => {
-          const targets = [0.06, 0.36, 0.64, 0.88];
+          const targets = [0.06, 0.36, 0.64, 0.85];
           this.progress = targets[idx];
-          this.updateStageUI(idx, 0.5);
+          this.updateStageUI(idx, this.progress);
         });
       });
+
+      // Unified draggable timeline scrubber
+      if (this.scrubber) {
+        const scrubToClientX = (clientX) => {
+          const track = this.scrubber.querySelector('.scrubber-track') || this.scrubber;
+          const rect = track.getBoundingClientRect();
+          if (!rect.width) return;
+          const next = clamp01((clientX - rect.left) / rect.width);
+          const deltaP = next - this.progress;
+          this.progress = next;
+          // Gently advance particle clock along with manual scrubbing so particles respond to dragging
+          this.animTime = Math.max(0, this.animTime + deltaP * 8.0);
+          const st = this.computeTimeline(this.progress);
+          this.updateStageUI(st.stageIdx, this.progress);
+        };
+
+        this.scrubber.addEventListener('pointerdown', (e) => {
+          this.scrubbing = true;
+          this.wasPlayingBeforeScrub = this.playing;
+          this.playing = false;
+          this.scrubber.classList.add('is-scrubbing');
+          this.scrubber.setPointerCapture(e.pointerId);
+          scrubToClientX(e.clientX);
+        });
+        this.scrubber.addEventListener('pointermove', (e) => {
+          if (!this.scrubbing) return;
+          scrubToClientX(e.clientX);
+        });
+        const endScrub = (e) => {
+          if (!this.scrubbing) return;
+          this.scrubbing = false;
+          this.scrubber.classList.remove('is-scrubbing');
+          try { this.scrubber.releasePointerCapture(e.pointerId); } catch (_) {}
+          if (this.wasPlayingBeforeScrub) {
+            this.playing = true;
+          }
+          this.syncPlayButton();
+        };
+        this.scrubber.addEventListener('pointerup', endScrub);
+        this.scrubber.addEventListener('pointercancel', endScrub);
+
+        this.scrubber.addEventListener('keydown', (e) => {
+          if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+            e.preventDefault();
+            this.progress = clamp01(this.progress + 0.02);
+            this.animTime += 0.16;
+          } else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+            e.preventDefault();
+            this.progress = clamp01(this.progress - 0.02);
+            this.animTime = Math.max(0, this.animTime - 0.16);
+          } else if (e.key === ' ') {
+            e.preventDefault();
+            this.playing = !this.playing;
+            this.syncPlayButton();
+          }
+        });
+      }
 
       if (this.playBtn) {
         this.playBtn.addEventListener('click', () => {
@@ -605,6 +693,9 @@
         deltaMix: gl.getUniformLocation(this.progPoints, 'uDeltaMix'),
         scanX: gl.getUniformLocation(this.progPoints, 'uScanX'),
         queryMix: gl.getUniformLocation(this.progPoints, 'uQueryMix'),
+        ghostPass: gl.getUniformLocation(this.progPoints, 'uGhostPass'),
+        ghostT: gl.getUniformLocation(this.progPoints, 'uGhostT'),
+        ghostAlpha: gl.getUniformLocation(this.progPoints, 'uGhostAlpha'),
         time: gl.getUniformLocation(this.progPoints, 'uTime'),
         scale: gl.getUniformLocation(this.progPoints, 'uPointScale')
       };
@@ -678,19 +769,19 @@
       const photoAlpha = (1.0 - smoothstep(0.18, 0.34, p)) * 0.94 + loopReset * 0.94;
       const frameAlpha = (1.0 - smoothstep(0.45, 0.56, p)) * 0.85 + loopReset * 0.85;
 
-      // Temporal 3D morph O_t -> O_{t+H} in Stage 2, then returns to O_t during Stage 3 deployment
-      const morphUp = smoothstep(0.47, 0.62, p);
-      const morphBack = smoothstep(0.84, 0.93, p);
+      // Temporal 3D morph O_t -> O_{t+H} in Stage 2, then returns cleanly to solid O_t right as Stage 3 opens
+      const morphUp = smoothstep(0.47, 0.61, p);
+      const morphBack = smoothstep(0.72, 0.775, p);
       const morph = morphUp * (1.0 - morphBack);
 
-      // VGGT feature delta reveal in Stage 2
+      // VGGT feature delta reveal in Stage 2, fades out as Stage 3 deployment opens
       const deltaIn = smoothstep(0.51, 0.60, p);
-      const deltaOut = smoothstep(0.76, 0.85, p);
-      const deltaMix = deltaIn * (1.0 - deltaOut * 0.72) * (1.0 - loopReset);
+      const deltaOut = smoothstep(0.72, 0.79, p);
+      const deltaMix = deltaIn * (1.0 - deltaOut) * (1.0 - loopReset);
       const scanX = lerp(-0.85, 1.25, smoothstep(0.50, 0.70, p));
 
-      // Spatial transition queries Z_delta in Stage 3
-      const queryMix = smoothstep(0.73, 0.82, p) * (1.0 - smoothstep(0.93, 0.99, p));
+      // Spatial transition queries Z_delta + holographic foresight ghost in Stage 3
+      const queryMix = smoothstep(0.73, 0.80, p) * (1.0 - smoothstep(0.94, 0.99, p));
 
       // Camera orbit keyframes (around camTarget)
       // Base frontal camera matches original calibrated extrinsics: yaw=0, pitch=0.927 rad (53.1 deg), dist=1.08
@@ -711,11 +802,11 @@
       pitch = lerp(pitch, 0.62, t2);
       dist = lerp(dist, 1.26, t2);
 
-      // Gently sweep around foresight queries
+      // Side-3/4 angle in Stage 4 so the arm's forward O_t -> O_{t+H} displacement separates cleanly across screen
       const t3 = smoothstep(0.74, 0.95, p);
-      yaw = lerp(yaw, -0.18, t3);
-      pitch = lerp(pitch, 0.58, t3);
-      dist = lerp(dist, 1.30, t3);
+      yaw = lerp(yaw, 0.86, t3);
+      pitch = lerp(pitch, 0.40, t3);
+      dist = lerp(dist, 1.24, t3);
 
       // Smooth return to frontal camera at loop boundary
       yaw = lerp(yaw, -0.04, loopReset);
@@ -725,13 +816,16 @@
       return { stageIdx, stageLocal, unproject, photoAlpha, frameAlpha, morph, deltaMix, scanX, queryMix, yaw, pitch, dist };
     }
 
-    updateStageUI(stageIdx, stageLocal) {
+    updateStageUI(stageIdx, progress) {
       if (this.activeStage !== stageIdx) {
         this.activeStage = stageIdx;
         const def = STAGE_DEFS[stageIdx];
         if (this.badgeEl) this.badgeEl.innerHTML = def.badge;
         if (this.titleEl) this.titleEl.innerHTML = def.title;
         if (this.detailEl) this.detailEl.innerHTML = def.detail;
+        if (this.hintEl) {
+          this.hintEl.innerHTML = def.hint || 'Drag to orbit 3D · 7,884 measured RoboTwin points';
+        }
         this.stageButtons.forEach((btn, i) => {
           const isCur = i === stageIdx;
           btn.classList.toggle('is-active', isCur);
@@ -740,11 +834,10 @@
         if (this.thumbCurrent) this.thumbCurrent.classList.toggle('is-active', stageIdx === 0 || stageIdx === 1 || stageIdx === 3);
         if (this.thumbFuture) this.thumbFuture.classList.toggle('is-active', stageIdx === 2);
       }
-      this.progressBars.forEach((bar, i) => {
-        if (!bar) return;
-        const pct = i < stageIdx ? 100 : i === stageIdx ? Math.round(stageLocal * 100) : 0;
-        bar.style.width = `${pct}%`;
-      });
+      const pct = clamp01(progress) * 100;
+      if (this.scrubberFill) this.scrubberFill.style.width = `${pct.toFixed(2)}%`;
+      if (this.scrubberThumb) this.scrubberThumb.style.left = `${pct.toFixed(2)}%`;
+      if (this.scrubber) this.scrubber.setAttribute('aria-valuenow', String(Math.round(pct)));
     }
 
     buildCamera(state) {
@@ -794,7 +887,7 @@
         gl.depthMask(true);
       }
 
-      // 2. Draw 7,884 real RGB-D + VGGT delta points
+      // 2. Draw 7,884 real RGB-D + VGGT delta points (solid O_t scene in Stage 4)
       gl.enable(gl.DEPTH_TEST);
       gl.depthMask(true);
       gl.useProgram(this.progPoints);
@@ -804,11 +897,25 @@
       gl.uniform1f(this.uP.deltaMix, state.deltaMix);
       gl.uniform1f(this.uP.scanX, state.scanX);
       gl.uniform1f(this.uP.queryMix, state.queryMix);
+      gl.uniform1f(this.uP.ghostPass, 0.0);
+      gl.uniform1f(this.uP.ghostT, 0.0);
+      gl.uniform1f(this.uP.ghostAlpha, 0.0);
       gl.uniform1f(this.uP.time, timeSec);
       const pxScale = (this.height || 500) * this.dpr / 460.0;
       gl.uniform1f(this.uP.scale, pxScale);
       gl.bindVertexArray(this.vaoPoints);
       gl.drawArrays(gl.POINTS, 0, this.pointCount);
+
+      // 2b. Stage 4 Single Airy Target Hologram at O_{t+H} (no stacked multi-ghost clutter)
+      if (state.queryMix > 0.02) {
+        gl.depthMask(false);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+        gl.uniform1f(this.uP.ghostPass, 1.0);
+        gl.uniform1f(this.uP.ghostT, 1.0);
+        gl.uniform1f(this.uP.ghostAlpha, state.queryMix * 0.44);
+        gl.drawArrays(gl.POINTS, 0, this.pointCount);
+        gl.depthMask(true);
+      }
 
       // 3. Draw 3D Lines: image-plane frustum border + camera rays during lift + 3D foresight flow arcs in Stage 3
       const lineVerts = [];
@@ -835,57 +942,72 @@
         }
       }
 
-      // 3D parabolic motion trajectories + glowing Z_delta query nodes
+      // Sparse, well-spaced 3D motion streamlines + Z_delta query anchors (max ~14 clean arcs, zero tangle)
       const queryVerts = [];
       if (state.queryMix > 0.02 && this.meta.queries) {
         const qm = state.queryMix;
         const qs = this.meta.queries;
-        for (let i = 0; i < qs.length; i += 1) {
+        // Pick spatially separated moving queries (greedy min-distance spacing) for clean readable flow lines
+        const chosen = [];
+        for (let i = 0; i < qs.length && chosen.length < 14; i += 1) {
           const q = qs[i];
+          const dist3 = Math.hypot(q.fut[0] - q.cur[0], q.fut[1] - q.cur[1], q.fut[2] - q.cur[2]);
+          if (!q.moving || dist3 < 0.045) continue;
+          let tooClose = false;
+          for (let j = 0; j < chosen.length; j += 1) {
+            const c = chosen[j].cur;
+            if (Math.hypot(q.cur[0] - c[0], q.cur[1] - c[1], q.cur[2] - c[2]) < 0.11) {
+              tooClose = true;
+              break;
+            }
+          }
+          if (!tooClose) chosen.push(q);
+        }
+
+        const pulseCycle = ((this.animTime * 0.55) % 1.0 + 1.0) % 1.0;
+        for (let i = 0; i < chosen.length; i += 1) {
+          const q = chosen[i];
           const p0 = q.cur;
           const p1 = q.fut;
           const d = q.delta;
-
-          // Query node anchored near current/midpoint pose
-          const pulse = 0.8 + 0.2 * Math.sin(timeSec * 3.8 + i * 0.6);
-          const qx = lerp(p0[0], p1[0], 0.15);
-          const qy = lerp(p0[1], p1[1], 0.15) + 0.012;
-          const qz = lerp(p0[2], p1[2], 0.15);
-          queryVerts.push(qx, qy, qz, (5.8 + d * 3.2) * pulse, 0.68, 0.48, 1.0, qm * (0.48 + 0.28 * d));
-
-          // Draw curved 3D motion flow arc for moving queries
           const dist3 = Math.hypot(p1[0] - p0[0], p1[1] - p0[1], p1[2] - p0[2]);
-          if (q.moving && dist3 > 0.03) {
-            const segs = 10;
-            const arcLift = 0.035 + dist3 * 0.22;
-            const mid = [
-              (p0[0] + p1[0]) * 0.5,
-              (p0[1] + p1[1]) * 0.5 + arcLift,
-              (p0[2] + p1[2]) * 0.5
+
+          // Small crisp violet anchor dot at O_t start
+          queryVerts.push(p0[0], p0[1], p0[2], 5.2, 0.74, 0.54, 1.0, qm * 0.72);
+          // Crisp cyan endpoint dot on the O_{t+H} hologram
+          queryVerts.push(p1[0], p1[1], p1[2], 5.6, 0.34, 0.90, 1.0, qm * 0.80);
+
+          // Sleek 3D curved streamline from O_t -> O_{t+H}
+          const segs = 12;
+          const arcLift = 0.024 + dist3 * 0.14;
+          const mid = [
+            (p0[0] + p1[0]) * 0.5,
+            (p0[1] + p1[1]) * 0.5 + arcLift,
+            (p0[2] + p1[2]) * 0.5
+          ];
+          let prev = p0;
+          for (let s = 1; s <= segs; s += 1) {
+            const t = s / segs;
+            const it = 1 - t;
+            const pt = [
+              it * it * p0[0] + 2 * it * t * mid[0] + t * t * p1[0],
+              it * it * p0[1] + 2 * it * t * mid[1] + t * t * p1[1],
+              it * it * p0[2] + 2 * it * t * mid[2] + t * t * p1[2]
             ];
-            let prev = p0;
-            for (let s = 1; s <= segs; s += 1) {
-              const t = s / segs;
-              const it = 1 - t;
-              const pt = [
-                it * it * p0[0] + 2 * it * t * mid[0] + t * t * p1[0],
-                it * it * p0[1] + 2 * it * t * mid[1] + t * t * p1[1],
-                it * it * p0[2] + 2 * it * t * mid[2] + t * t * p1[2]
-              ];
-              const colR = lerp(0.72, 0.36, t);
-              const colG = lerp(0.50, 0.90, t);
-              const colB = lerp(1.0, 0.98, t);
-              pushSeg(prev, pt, colR, colG, colB, qm * 0.72 * (0.42 + 0.58 * t));
-              prev = pt;
-            }
-            // Travelling foresight particle bead along each arc
-            const bt = (timeSec * 0.65 + i * 0.17) % 1.0;
-            const ib = 1 - bt;
-            const bx = ib * ib * p0[0] + 2 * ib * bt * mid[0] + bt * bt * p1[0];
-            const by = ib * ib * p0[1] + 2 * ib * bt * mid[1] + bt * bt * p1[1];
-            const bz = ib * ib * p0[2] + 2 * ib * bt * mid[2] + bt * bt * p1[2];
-            queryVerts.push(bx, by, bz, 5.0, 0.42, 0.94, 0.86, qm * Math.sin(bt * Math.PI) * 0.85);
+            const colR = lerp(0.74, 0.30, t);
+            const colG = lerp(0.52, 0.92, t);
+            const colB = lerp(1.0, 1.0, t);
+            pushSeg(prev, pt, colR, colG, colB, qm * 0.85 * (0.45 + 0.55 * t));
+            prev = pt;
           }
+
+          // Smooth travelling foresight energy pulse gliding O_t -> O_{t+H}
+          const bt = (pulseCycle + i * 0.04) % 1.0;
+          const ib = 1 - bt;
+          const bx = ib * ib * p0[0] + 2 * ib * bt * mid[0] + bt * bt * p1[0];
+          const by = ib * ib * p0[1] + 2 * ib * bt * mid[1] + bt * bt * p1[1];
+          const bz = ib * ib * p0[2] + 2 * ib * bt * mid[2] + bt * bt * p1[2];
+          queryVerts.push(bx, by, bz, 6.4, 0.48, 0.96, 1.0, qm * Math.sin(Math.max(0.06, bt) * Math.PI) * 0.95);
         }
       }
 
@@ -955,6 +1077,9 @@
 
       if (this.playing) {
         this.progress = (this.progress + dt / this.cycleDuration) % 1.0;
+        if (!this.reducedMotion) {
+          this.animTime += dt * 0.001;
+        }
       }
 
       // Smooth damping on manual orbit
@@ -963,10 +1088,10 @@
       this.userZoom += (this.targetUserZoom - this.userZoom) * 0.14;
 
       const state = this.computeTimeline(this.progress);
-      this.updateStageUI(state.stageIdx, state.stageLocal);
+      this.updateStageUI(state.stageIdx, this.progress);
 
       if (this.useWebGL) {
-        this.renderWebGL(state, now * 0.001);
+        this.renderWebGL(state, this.animTime);
       } else {
         this.render2DFallback(state);
       }
