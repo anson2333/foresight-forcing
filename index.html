@@ -40,7 +40,6 @@
         <a href="#results">Results</a>
         <a href="#real-world">Real world</a>
         <a href="#citation">Citation</a>
-        <button class="intro-replay" type="button" data-intro-replay aria-label="Restart 3D concept demo" title="Restart 3D concept demo">↻</button>
       </div>
     </nav>
   </header>
@@ -50,7 +49,6 @@
       <div class="hero-grid" aria-hidden="true"></div>
       <div class="hero-inner hero-centered">
         <div class="hero-copy">
-          <p class="eyebrow">World Action Models · 3D Transition Learning</p>
           <h1>Foresight <em>Forcing</em></h1>
           <p class="hero-subtitle">Learning Spatial Foresight for Robotic Manipulation</p>
           <div class="hero-people" aria-label="Authors and affiliations">
@@ -91,27 +89,21 @@
 
         <div class="foresight-stage" id="foresight-stage" data-foresight-stage aria-label="Interactive 3D point cloud and VGGT feature delta animation">
           <div class="stage-topbar">
-            <div class="stage-meta-left">
-              <span class="stage-live-dot" aria-hidden="true"></span>
-              <span class="stage-badge" data-stage-badge>STAGE 01 · CURRENT OBSERVATION</span>
+            <div class="stage-thumbs" aria-label="Paired RoboTwin observations">
+              <span class="stage-thumb is-active" data-thumb-current>
+                <img src="assets/images/scene_before.jpg" alt="Current observation O_t" width="64" height="48">
+                <b>O<sub>t</sub></b>
+              </span>
+              <span class="stage-thumb" data-thumb-future>
+                <img src="assets/images/scene_after.jpg" alt="Future observation O_t+H" width="64" height="48">
+                <b>O<sub>t+H</sub></b>
+              </span>
             </div>
-            <div class="stage-topbar-right">
-              <div class="stage-thumbs" aria-label="Paired RoboTwin observations">
-                <span class="stage-thumb is-active" data-thumb-current>
-                  <img src="assets/images/scene_before.jpg" alt="Current observation O_t" width="64" height="48">
-                  <b>O<sub>t</sub></b>
-                </span>
-                <span class="stage-thumb" data-thumb-future>
-                  <img src="assets/images/scene_after.jpg" alt="Future observation O_t+H" width="64" height="48">
-                  <b>O<sub>t+H</sub></b>
-                </span>
-              </div>
-              <div class="stage-tools">
-                <button class="stage-btn" type="button" data-stage-toggle aria-pressed="false" title="Pause animation"><span aria-hidden="true">❚❚</span> Pause</button>
-                <button class="stage-icon-btn" type="button" data-stage-zoom-out aria-label="Zoom out 3D view" title="Zoom out">−</button>
-                <button class="stage-icon-btn" type="button" data-stage-zoom-in aria-label="Zoom in 3D view" title="Zoom in">+</button>
-                <button class="stage-icon-btn" type="button" data-stage-reset aria-label="Reset 3D camera view" title="Reset camera">↺</button>
-              </div>
+            <div class="stage-tools">
+              <button class="stage-btn" type="button" data-stage-toggle aria-pressed="false" title="Pause animation"><span aria-hidden="true">❚❚</span> Pause</button>
+              <button class="stage-icon-btn" type="button" data-stage-zoom-out aria-label="Zoom out 3D view" title="Zoom out">−</button>
+              <button class="stage-icon-btn" type="button" data-stage-zoom-in aria-label="Zoom in 3D view" title="Zoom in">+</button>
+              <button class="stage-icon-btn" type="button" data-stage-reset aria-label="Reset 3D camera view" title="Reset camera">↺</button>
             </div>
           </div>
 
@@ -128,7 +120,6 @@
                   <span><i class="swatch-delta"></i>Measured VGGT Δ</span>
                   <span><i class="swatch-query"></i>Spatial query Z<sub>Δ</sub></span>
                 </div>
-                <span class="stage-hint" data-stage-hint>Drag to orbit 3D · 7,884 measured RoboTwin points</span>
               </div>
             </div>
           </div>
@@ -166,10 +157,6 @@
           <div><strong>+4.1%</strong><span>Eager latency</span></div>
         </div>
       </div>
-      <a class="hero-next" href="#insight" aria-label="Continue to key insight">
-        <span>Core idea</span>
-        <span aria-hidden="true">↓</span>
-      </a>
     </section>
 
     <section class="section insight-section" id="insight">
@@ -207,11 +194,9 @@
 
         <figure class="wide-figure teaser-figure figure-breakout figure-breakout-wide">
           <div class="figure-toolbar">
-            <span>Foresight Forcing at a glance</span>
             <button class="icon-button" type="button" data-expand-image="assets/images/teaser.svg" aria-label="Expand project overview" title="Expand project overview">↗</button>
           </div>
           <img src="assets/images/teaser.svg" alt="Overview of Foresight Forcing, including transition supervision, policy inference, benchmarks, and real-world tasks" width="1420" height="632" loading="eager">
-          <figcaption>Foresight Forcing at a glance: transition supervision is used only during training; deployment requires no future observation or 3D teacher.</figcaption>
         </figure>
       </div>
     </section>
@@ -244,11 +229,9 @@
 
         <figure class="wide-figure method-figure figure-breakout">
           <div class="figure-toolbar">
-            <span>F<sup>2</sup> architecture</span>
             <button class="icon-button" type="button" data-expand-image="assets/images/method-overview.svg" aria-label="Expand architecture figure" title="Expand figure">↗</button>
           </div>
           <img src="assets/images/method-overview.svg" alt="Foresight Forcing architecture with FLUX.2 backbone, shared query updater, Action Expert, and VGGT geometry supervision" width="1103" height="586" loading="lazy">
-          <figcaption>Future observations and VGGT appear only on the supervision side. The current-input pathway predicts transition queries at both training and inference.</figcaption>
         </figure>
       </div>
     </section>
@@ -322,30 +305,73 @@
           </div>
 
           <div class="zdelta-footer">
-            <p class="zdelta-desc" data-zd-desc>Left AGILEX arm lifts the green bottle on a randomized cluttered tabletop. With zero future frames supplied, F<sup>2</sup> recovers the teacher VGGT feature delta across the moving arm and bottle while suppressing static distractors.</p>
             <div class="zdelta-metrics" data-zd-metrics aria-label="Measured alignment metrics">
               <span><b>r = 0.901</b> Norm Pearson</span>
               <span><b>0.686</b> Top-25% Cos</span>
               <span><b>0.625</b> Top-20% IoU</span>
-              <span class="badge-zero">O<sub>t</sub> only · no future frame</span>
             </div>
           </div>
         </div>
 
         <div class="evidence-stack">
-          <figure class="evidence-figure">
-            <div class="evidence-copy">
+          <div class="probe-3d-shell" data-probe-3d aria-label="Interactive 3D future-point displacement probe viewer">
+            <div class="evidence-copy probe-header-copy">
               <div>
-                <span class="evidence-index">Probe</span>
-                <h3>Future-point readout</h3>
+                <span class="evidence-index">3D Probe</span>
+                <h3>Future-point displacement in 3D</h3>
               </div>
-              <p>A probe trained on frozen queries predicts future image-space displacement near the observed future, while ImageWAM provides a weaker spatial readout.</p>
+              <p>A linear probe trained on frozen <em>Z<sub>Δ</sub></em> queries recovers future object motion closely matching observed futures, lifted onto VGGT 3D depth for interactive inspection against ImageWAM.</p>
             </div>
-            <div class="evidence-image-viewport">
-              <div class="evidence-image-toolbar"><span>Frozen <em>Z<sub>Δ</sub></em> probe · 10 px scale</span><button class="icon-button" type="button" data-expand-image="assets/images/point-readout.svg" aria-label="Expand future-point readout" title="Expand readout">↗</button></div>
-              <img src="assets/images/point-readout.svg" alt="Future-point displacement predictions from Foresight Forcing, ImageWAM, and observed futures" width="485" height="104" loading="lazy">
+
+            <div class="probe-card">
+              <div class="probe-topbar">
+                <div class="probe-case-tabs" role="tablist" aria-label="Select 3D displacement probe case">
+                  <button class="zdelta-tab is-active" type="button" role="tab" aria-selected="true" data-probe-case="134054">
+                    <strong>LIBERO · Push plate</strong><span>Held-out TEST · 3.53 px vs 11.56 px</span>
+                  </button>
+                  <button class="zdelta-tab" type="button" role="tab" aria-selected="false" data-probe-case="194590">
+                    <strong>LIBERO · Mug to microwave</strong><span>LIBERO-10 · 3.30 px vs 5.87 px</span>
+                  </button>
+                </div>
+                <div class="probe-cam-bar">
+                  <div class="zdelta-mode-switch" role="group" aria-label="Switch Current or Future 3D scene">
+                    <button class="zdelta-mode-btn is-active" type="button" aria-pressed="true" data-probe-frame="current">Current O<sub>t</sub></button>
+                    <button class="zdelta-mode-btn" type="button" aria-pressed="false" data-probe-frame="future">Future O<sub>t+H</sub></button>
+                  </div>
+                  <div class="zdelta-mode-switch" role="group" aria-label="3D camera presets">
+                    <button class="zdelta-mode-btn is-active" type="button" data-probe-cam="oblique">3D</button>
+                    <button class="zdelta-mode-btn" type="button" data-probe-cam="front">Cam</button>
+                    <button class="zdelta-mode-btn" type="button" data-probe-cam="top">Top</button>
+                  </div>
+                  <div class="stage-tools">
+                    <button class="stage-icon-btn" type="button" data-probe-zoom-out aria-label="Zoom out" title="Zoom out">−</button>
+                    <button class="stage-icon-btn" type="button" data-probe-zoom-in aria-label="Zoom in" title="Zoom in">+</button>
+                    <button class="stage-icon-btn" type="button" data-probe-reset aria-label="Reset camera" title="Reset camera">↺</button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="probe-viewport">
+                <canvas class="probe-canvas" data-probe-canvas role="img" aria-label="Interactive 3D point cloud showing tracked object displacement trajectories comparing Observed Future, F^2 frozen Z_delta probe, and ImageWAM"></canvas>
+                <div class="probe-overlay-layers" aria-label="Toggle 3D trajectory layers">
+                  <button class="probe-pill is-active" type="button" aria-pressed="true" data-probe-layer="gt"><i class="dot-gt"></i><span>Observed Future</span></button>
+                  <button class="probe-pill is-active" type="button" aria-pressed="true" data-probe-layer="ours"><i class="dot-ours"></i><span>F<sup>2</sup> (Frozen Z<sub>Δ</sub>)</span></button>
+                  <button class="probe-pill is-active" type="button" aria-pressed="true" data-probe-layer="baseline"><i class="dot-base"></i><span>ImageWAM</span></button>
+                  <button class="probe-pill is-active" type="button" aria-pressed="true" data-probe-ghost-toggle><span>Faint Ghost</span></button>
+                  <button class="probe-pill" type="button" aria-pressed="false" data-probe-points-toggle><span>1 center pt</span></button>
+                  <button class="probe-pill" type="button" aria-pressed="false" data-probe-heat><i class="dot-heat"></i><span>Z<sub>Δ</sub> Heatmap</span></button>
+                </div>
+              </div>
+
+              <div class="probe-footer">
+                <div class="probe-metrics" data-probe-metrics aria-label="Displacement probe accuracy">
+                  <span class="m-ours"><b>3.76 px</b> F<sup>2</sup> (center pt)</span>
+                  <span class="m-base"><b>11.59 px</b> ImageWAM</span>
+                  <span class="m-gain"><b>3.1×</b> lower error</span>
+                </div>
+              </div>
             </div>
-          </figure>
+          </div>
         </div>
       </div>
     </section>
@@ -357,7 +383,6 @@
             <p class="section-kicker">Simulation benchmarks</p>
             <h2>Strong control across standard and shifted scenes.</h2>
           </div>
-          <p class="results-note">Success rate (%). Select a benchmark to inspect the reported comparison.</p>
         </div>
 
         <div class="results-explorer">
@@ -378,13 +403,18 @@
           </div>
         </div>
 
-        <div class="ablation-band">
+        <div class="ablation-band" data-ablation-explorer>
           <div class="ablation-copy">
-            <p class="section-kicker">Controlled analysis</p>
-            <h3>Feature deltas outperform single-frame targets.</h3>
-            <p>On LIBERO-Plus, delta supervision reaches 84.5%, compared with 83.2% for current features, 81.2% for future features, and 82.3% without distillation.</p>
+            <p class="section-kicker">Controlled analysis · LIBERO-Plus</p>
+            <div class="ablation-tabs" role="tablist" aria-label="Ablation dimensions">
+              <button class="ablation-tab is-active" type="button" role="tab" aria-selected="true" data-ablation-tab="target">Supervision target</button>
+              <button class="ablation-tab" type="button" role="tab" aria-selected="false" data-ablation-tab="teacher">3D teacher</button>
+              <button class="ablation-tab" type="button" role="tab" aria-selected="false" data-ablation-tab="budget">Query budget</button>
+            </div>
+            <h3 data-ablation-title>Feature deltas outperform single-frame targets.</h3>
+            <p data-ablation-desc>On LIBERO-Plus, delta supervision reaches 84.5%, compared with 83.2% for current features, 81.2% for future features, and 82.3% without distillation.</p>
           </div>
-          <div class="ablation-bars" aria-label="Supervision target ablation">
+          <div class="ablation-bars" data-ablation-bars aria-label="Controlled ablation bars">
             <div><span>F<sup>2</sup> · delta</span><i style="--value: 84.5%"></i><b>84.5</b></div>
             <div><span>Current</span><i style="--value: 83.2%"></i><b>83.2</b></div>
             <div><span>No distill.</span><i style="--value: 82.3%"></i><b>82.3</b></div>
@@ -414,7 +444,7 @@
               <div class="video-stage-meta">
                 <span class="video-task-pill" data-video-title>Cup stacking</span>
                 <span class="video-score-pill" data-video-score>F² 93% · ImageWAM 67% · π₀.₅ 73%</span>
-                <span class="video-speed-tag" data-video-rate-tag>4× real-time · full rollout</span>
+                <span class="video-speed-tag" data-video-rate-tag>2× real-time · full rollout</span>
               </div>
               <div class="video-speed-controls" aria-label="Playback speed">
                 <button class="speed-btn is-active" type="button" data-video-speed="1">1×</button>
@@ -424,7 +454,6 @@
             <div class="video-frame">
               <video data-featured-video src="assets/videos/cup_stacking.mp4" poster="assets/videos/cup_stacking.jpg" controls muted loop playsinline preload="metadata"></video>
             </div>
-            <p class="video-caption" data-video-desc>Bimanual pyramid cup stacking requiring precise vertical alignment and contact-rich placement (full-task completion).</p>
           </div>
 
           <div class="real-video-grid" role="tablist" aria-label="Select real-world rollout video">
@@ -573,7 +602,7 @@
               </tfoot>
             </table>
           </div>
-          <p class="real-table-note"><sup>*</sup> Item-level evaluation. F<sup>2</sup> is trained jointly across all six tasks without large-scale robot pretraining, yet matches or exceeds pretrained π<sub>0.5</sub> on 4 of 6 tasks and outperforms ImageWAM by +15.6% on average.</p>
+          <p class="real-table-note"><sup>*</sup> Item-level evaluation.</p>
         </div>
       </div>
     </section>
@@ -585,18 +614,22 @@
           <h2>Training-only supervision, modest deployment cost.</h2>
           <p>VGGT and the future observation are discarded at inference. Only the learned transition-query pathway remains.</p>
         </div>
-        <div class="latency-compare" aria-label="Inference latency comparison">
+        <div class="latency-compare" data-latency-compare aria-label="Inference latency comparison">
+          <div class="latency-mode-bar" role="tablist" aria-label="Execution mode">
+            <button class="latency-mode-btn is-active" type="button" role="tab" aria-selected="true" data-latency-mode="eager">Eager PyTorch (+4.1%)</button>
+            <button class="latency-mode-btn" type="button" role="tab" aria-selected="false" data-latency-mode="cudagraph">CUDA Graph (−49% latency)</button>
+          </div>
           <div class="latency-row baseline">
             <span>ImageWAM</span>
-            <i><b style="width: 96.1%"></b></i>
-            <strong>187.41 ms</strong>
+            <i><b data-lat-bar="base" style="width: 96.1%"></b></i>
+            <strong data-lat-val="base">187.41 ms</strong>
           </div>
           <div class="latency-row ours">
             <span>F<sup>2</sup></span>
-            <i><b style="width: 100%"></b></i>
-            <strong>195.01 ms</strong>
+            <i><b data-lat-bar="ours" style="width: 100%"></b></i>
+            <strong data-lat-val="ours">195.01 ms</strong>
           </div>
-          <p>Median latency per 16-action chunk · H200 · BF16 · 10 denoising steps</p>
+          <p data-lat-note>Median latency per 16-action chunk · H200 · BF16 · 10 denoising steps · +4.1% overhead</p>
         </div>
       </div>
     </section>
@@ -646,6 +679,7 @@
   </dialog>
 
   <script src="js/foresight-3d.js"></script>
+  <script src="js/probe-3d.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>

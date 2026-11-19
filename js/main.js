@@ -1,6 +1,7 @@
 /* Foresight Forcing — Main Site Interactions */
 
 const foresight3D = typeof window.initForesight3D === 'function' ? window.initForesight3D() : null;
+const probe3D = typeof window.initProbe3D === 'function' ? window.initProbe3D() : null;
 
 const header = document.querySelector('[data-header]');
 const navToggle = document.querySelector('[data-nav-toggle]');
@@ -131,7 +132,7 @@ if (zdRoot) {
     if (metricsEl) {
       metricsEl.innerHTML = item.metrics
         .map(([val, lbl]) => `<span><b>${val}</b> ${lbl}</span>`)
-        .join('') + '<span class="badge-zero">O<sub>t</sub> only · no future frame</span>';
+        .join('');
     }
   }
 
@@ -242,12 +243,110 @@ resultTabs.forEach((tab) => {
 
 renderResult('robotwin');
 
+/* Controlled Ablation Explorer (LIBERO-Plus) */
+const ablationData = {
+  target: {
+    title: 'Feature deltas outperform single-frame targets.',
+    desc: 'On LIBERO-Plus, delta supervision reaches 84.5%, compared with 83.2% for current features, 81.2% for future features, and 82.3% without distillation.',
+    rows: [
+      ['F<sup>2</sup> · delta', 84.5],
+      ['Current', 83.2],
+      ['No distill.', 82.3],
+      ['Future', 81.2]
+    ]
+  },
+  teacher: {
+    title: 'Geometry-oriented VGGT provides the strongest supervision.',
+    desc: 'Among tested frozen teachers on LIBERO-Plus, VGGT (84.5%) outperforms semantic DINOv3 (83.4%) and π³ (82.9%), showing that both 3D geometry and teacher choice matter.',
+    rows: [
+      ['VGGT (F<sup>2</sup>)', 84.5],
+      ['DINOv3', 83.4],
+      ['π<sup>3</sup>', 82.9]
+    ]
+  },
+  budget: {
+    title: 'Frame-matched query budget (N = 392) performs best.',
+    desc: 'Matching LIBERO’s 14×28 two-view visual token grid (392 queries) reaches 84.5%, outperforming both smaller (200 → 82.8%) and larger (512 → 82.1%) query budgets.',
+    rows: [
+      ['392 (matched)', 84.5],
+      ['200 queries', 82.8],
+      ['512 queries', 82.1]
+    ]
+  }
+};
+
+const abRoot = document.querySelector('[data-ablation-explorer]');
+if (abRoot) {
+  const abTabs = abRoot.querySelectorAll('[data-ablation-tab]');
+  const abTitle = abRoot.querySelector('[data-ablation-title]');
+  const abDesc = abRoot.querySelector('[data-ablation-desc]');
+  const abBars = abRoot.querySelector('[data-ablation-bars]');
+
+  function renderAblation(key) {
+    const item = ablationData[key];
+    if (!item || !abBars) return;
+    abTabs.forEach((t) => {
+      const act = t.dataset.ablationTab === key;
+      t.classList.toggle('is-active', act);
+      t.setAttribute('aria-selected', String(act));
+    });
+    if (abTitle) abTitle.textContent = item.title;
+    if (abDesc) abDesc.textContent = item.desc;
+    abBars.innerHTML = item.rows
+      .map(([lbl, val]) => `<div><span>${lbl}</span><i style="--value: ${val}%"></i><b>${val.toFixed(1)}</b></div>`)
+      .join('');
+  }
+
+  abTabs.forEach((t) => t.addEventListener('click', () => renderAblation(t.dataset.ablationTab)));
+}
+
+/* Inference Latency Toggle (Eager vs CUDA Graph) */
+const latData = {
+  eager: {
+    baseMs: '187.41 ms', baseW: '96.1%',
+    oursMs: '195.01 ms', oursW: '100%',
+    note: 'Median latency per 16-action chunk · H200 · BF16 · 10 denoising steps · +4.1% overhead'
+  },
+  cudagraph: {
+    baseMs: '80.20 ms', baseW: '41.1%',
+    oursMs: '99.53 ms', oursW: '51.0%',
+    note: 'CUDA Graph deployed mode · H200 · BF16 · 49% faster than eager F² (relative to eager 195.01 ms)'
+  }
+};
+
+const latRoot = document.querySelector('[data-latency-compare]');
+if (latRoot) {
+  const latBtns = latRoot.querySelectorAll('[data-latency-mode]');
+  const barBase = latRoot.querySelector('[data-lat-bar="base"]');
+  const barOurs = latRoot.querySelector('[data-lat-bar="ours"]');
+  const valBase = latRoot.querySelector('[data-lat-val="base"]');
+  const valOurs = latRoot.querySelector('[data-lat-val="ours"]');
+  const latNote = latRoot.querySelector('[data-lat-note]');
+
+  latBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const m = latData[btn.dataset.latencyMode];
+      if (!m) return;
+      latBtns.forEach((b) => {
+        const act = b === btn;
+        b.classList.toggle('is-active', act);
+        b.setAttribute('aria-selected', String(act));
+      });
+      if (barBase) barBase.style.width = m.baseW;
+      if (barOurs) barOurs.style.width = m.oursW;
+      if (valBase) valBase.textContent = m.baseMs;
+      if (valOurs) valOurs.textContent = m.oursMs;
+      if (latNote) latNote.textContent = m.note;
+    });
+  });
+}
+
 /* Real-World Rollout Video Gallery */
 const realVideoTasks = {
   cup_stacking: {
     title: 'Cup stacking',
     score: 'F² 93% · ImageWAM 67% · π₀.₅ 73%',
-    rate: '4× real-time · full rollout',
+    rate: '2× real-time · full rollout',
     desc: 'Bimanual pyramid cup stacking requiring precise vertical alignment and contact-rich placement (full-task completion).',
     src: 'assets/videos/cup_stacking.mp4',
     poster: 'assets/videos/cup_stacking.jpg'
@@ -255,7 +354,7 @@ const realVideoTasks = {
   towel_folding: {
     title: 'Towel folding',
     score: 'F² 100% · ImageWAM 87% · π₀.₅ 100%',
-    rate: '4× real-time · full rollout',
+    rate: '2× real-time · full rollout',
     desc: 'Coordinated bimanual folding of deformable cloth with continuous geometry changes across folding creases (full-task completion).',
     src: 'assets/videos/towel_folding.mp4',
     poster: 'assets/videos/towel_folding.jpg'
@@ -263,7 +362,7 @@ const realVideoTasks = {
   egg_transfer: {
     title: 'Egg transfer',
     score: 'F² 80% · ImageWAM 73% · π₀.₅ 80%',
-    rate: '4× real-time · full rollout',
+    rate: '2× real-time · full rollout',
     desc: 'Delicate picking and transfer of eggs into target slots without dropping or crushing (full-task completion).',
     src: 'assets/videos/egg_transfer.mp4',
     poster: 'assets/videos/egg_transfer.jpg'
@@ -271,7 +370,7 @@ const realVideoTasks = {
   breakfast_preparation: {
     title: 'Breakfast preparation',
     score: 'F² 80% · ImageWAM 73% · π₀.₅ 87%',
-    rate: '4× real-time · full rollout',
+    rate: '2× real-time · full rollout',
     desc: 'Long-horizon sequential food assembly across multiple objects and intermediate configurations (full-task completion).',
     src: 'assets/videos/breakfast_preparation.mp4',
     poster: 'assets/videos/breakfast_preparation.jpg'
@@ -279,7 +378,7 @@ const realVideoTasks = {
   tool_stowing: {
     title: 'Tool stowing*',
     score: 'F² 65.0% · ImageWAM 31.7% · π₀.₅ 63.3%',
-    rate: '4× real-time · full rollout',
+    rate: '2× real-time · full rollout',
     desc: 'Sequential placement of four articulated tools into fitted organizer slots (item-level score across 4 tools per trial).',
     src: 'assets/videos/tool_stowing.mp4',
     poster: 'assets/videos/tool_stowing.jpg'
@@ -287,7 +386,7 @@ const realVideoTasks = {
   size_sorting: {
     title: 'Size sorting*',
     score: 'F² 96.2% · ImageWAM 89.3% · π₀.₅ 97.7%',
-    rate: '4× real-time · full rollout',
+    rate: '2× real-time · full rollout',
     desc: 'Continuous sorting of 15 blocks by physical size into designated bins (item-level score across 15 blocks per trial).',
     src: 'assets/videos/size_sorting.mp4',
     poster: 'assets/videos/size_sorting.jpg'
@@ -316,7 +415,7 @@ if (galleryRoot) {
     titleEl.textContent = item.title;
     scoreEl.textContent = item.score;
     if (rateEl) rateEl.textContent = item.rate;
-    descEl.textContent = item.desc;
+    if (descEl) descEl.textContent = item.desc;
     videoEl.poster = item.poster;
     videoEl.src = item.src;
     videoEl.playbackRate = currentSpeed;

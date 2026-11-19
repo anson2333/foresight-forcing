@@ -502,9 +502,18 @@
         });
       }
 
-      // Pointer drag to orbit 3D point cloud
+      // Pointer drag to orbit 3D point cloud + scroll-safe wheel zoom
       const c = this.canvas;
+      const vp = c.parentElement;
+      this.wheelZoomActive = false;
+
+      const setWheelZoom = (on) => {
+        this.wheelZoomActive = Boolean(on);
+        if (vp) vp.classList.toggle('is-zoom-active', this.wheelZoomActive);
+      };
+
       c.addEventListener('pointerdown', (e) => {
+        setWheelZoom(true);
         this.dragging = true;
         this.lastPtrX = e.clientX;
         this.lastPtrY = e.clientY;
@@ -529,12 +538,29 @@
       c.addEventListener('pointerup', endDrag);
       c.addEventListener('pointercancel', endDrag);
 
-      // Only zoom on wheel when Ctrl/Shift held so page scrolling stays natural
+      if (vp) {
+        vp.addEventListener('pointerleave', () => {
+          if (!this.dragging && this.wheelZoomActive) setWheelZoom(false);
+        });
+      }
+      document.addEventListener('pointerdown', (e) => {
+        if (this.wheelZoomActive && vp && !vp.contains(e.target)) setWheelZoom(false);
+      });
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && this.wheelZoomActive) setWheelZoom(false);
+      });
+
+      // Wheel zoom when active (after clicking/dragging 3D) or when Ctrl/Meta/Shift held (pinch-to-zoom)
       c.addEventListener('wheel', (e) => {
-        if (!e.ctrlKey && !e.shiftKey) return;
+        const direct = this.wheelZoomActive || e.ctrlKey || e.metaKey || e.shiftKey;
+        if (!direct) return;
         e.preventDefault();
-        const factor = e.deltaY > 0 ? 1.08 : 0.92;
-        this.targetUserZoom = Math.max(0.62, Math.min(1.65, this.targetUserZoom * factor));
+        let dy = e.deltaY;
+        if (e.deltaMode === 1) dy *= 16;
+        else if (e.deltaMode === 2) dy *= 120;
+        dy = Math.max(-120, Math.min(120, dy));
+        const factor = Math.exp(dy * (e.ctrlKey || e.metaKey ? 0.0045 : 0.0018));
+        this.targetUserZoom = Math.max(0.52, Math.min(1.80, this.targetUserZoom * factor));
       }, { passive: false });
 
       this.resizeObserver = new ResizeObserver(() => this.resize());

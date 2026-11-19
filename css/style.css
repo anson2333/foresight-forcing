@@ -674,11 +674,9 @@ body.intro-open { overflow: hidden; }
 .is-scrolled .brand { color: var(--ink); }
 .brand-mark {
   display: block;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
-  border-radius: 8px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.16);
+  width: 34px;
+  height: 34px;
+  flex: 0 0 34px;
 }
 
 .nav-links { display: flex; align-items: center; gap: 26px; }
@@ -1012,7 +1010,7 @@ body.intro-open { overflow: hidden; }
 .method-principles p { margin: 0; color: var(--muted); }
 .method-figure { padding: 14px; border: 1px solid var(--line); background: var(--white); box-shadow: var(--shadow); }
 .method-figure img { border: 0; }
-.figure-toolbar { min-height: 42px; display: flex; align-items: center; justify-content: space-between; padding: 0 3px 10px 9px; font-size: 13px; font-weight: 700; }
+.figure-toolbar { min-height: 40px; display: flex; align-items: center; justify-content: flex-end; padding: 0 3px 8px 9px; font-size: 13px; font-weight: 700; }
 .icon-button {
   width: 36px;
   height: 36px;
@@ -2639,10 +2637,10 @@ body.intro-open { overflow: hidden; }
 }
 
 .zdelta-footer {
-  padding: 14px 18px;
+  padding: 11px 18px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: flex-end;
   gap: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(15, 23, 39, 0.86);
@@ -2700,4 +2698,272 @@ body.intro-open { overflow: hidden; }
   .zdelta-grid {
     grid-template-columns: 1fr;
   }
+}
+
+
+/* ==========================================================================
+   Interactive 3D Future-Point Displacement Probe Viewer (#evidence)
+   ========================================================================== */
+.probe-3d-shell {
+  width: 100%;
+  min-width: 0;
+}
+
+.probe-header-copy {
+  margin-bottom: 24px;
+}
+
+.probe-card {
+  border: 1px solid rgba(154, 178, 214, 0.24);
+  border-radius: 14px;
+  background: rgba(11, 18, 32, 0.94);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+  overflow: hidden;
+}
+
+.probe-topbar {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 27, 45, 0.9);
+}
+
+.probe-case-tabs,
+.probe-cam-bar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.probe-viewport {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  min-height: 360px;
+  max-height: 540px;
+  background: radial-gradient(circle at 50% 45%, #122038 0%, #0a101b 74%);
+  overflow: hidden;
+}
+
+.probe-canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: pan-y;
+}
+
+.probe-canvas.is-dragging {
+  cursor: grabbing;
+}
+
+.probe-overlay-layers {
+  position: absolute;
+  left: 14px;
+  top: 14px;
+  z-index: 3;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.probe-pill {
+  padding: 5px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 999px;
+  background: rgba(10, 16, 27, 0.78);
+  backdrop-filter: blur(8px);
+  color: #8f9fb5;
+  font-size: 11.5px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.probe-pill:hover {
+  border-color: rgba(255, 255, 255, 0.38);
+  color: #e6eef8;
+}
+
+.probe-pill.is-active {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.34);
+  background: rgba(23, 35, 58, 0.88);
+}
+
+.probe-pill i {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-gt { background: #34d399; box-shadow: 0 0 8px rgba(52, 211, 153, 0.75); }
+.dot-ours { background: linear-gradient(135deg, #a78bfa, #38bdf8); box-shadow: 0 0 8px rgba(139, 92, 246, 0.8); }
+.dot-base { background: #fb923c; box-shadow: 0 0 8px rgba(251, 146, 60, 0.75); }
+.dot-heat { background: linear-gradient(135deg, #d946ef, #facc15); }
+
+.probe-drag-hint {
+  position: absolute;
+  right: 16px;
+  bottom: 12px;
+  z-index: 3;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: rgba(10, 16, 27, 0.72);
+  color: #8fa1b9;
+  font-size: 11px;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.probe-footer {
+  padding: 11px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 18px;
+  flex-wrap: wrap;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 39, 0.88);
+}
+
+.probe-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.probe-metrics span {
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #a6b5ca;
+  font-size: 11.5px;
+}
+
+.probe-metrics span b {
+  color: #fff;
+  margin-right: 4px;
+}
+
+.probe-metrics .m-ours {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(125, 68, 214, 0.2);
+  color: #dfd0ff;
+}
+
+.probe-metrics .m-base {
+  border-color: rgba(251, 146, 60, 0.42);
+  background: rgba(251, 146, 60, 0.12);
+  color: #fed7aa;
+}
+
+.probe-metrics .m-gain {
+  border-color: rgba(52, 211, 153, 0.45);
+  background: rgba(52, 211, 153, 0.14);
+  color: #86efac;
+}
+
+/* Ablation 3-Tab Switcher */
+.ablation-tabs {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.ablation-tab {
+  padding: 6px 11px;
+  border: 1px solid rgba(16, 24, 40, 0.18);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.5);
+  color: #554f47;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 150ms ease, color 150ms ease, border-color 150ms ease;
+}
+
+.ablation-tab:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+.ablation-tab.is-active {
+  background: var(--ink);
+  border-color: var(--ink);
+  color: #fff;
+}
+
+.ablation-bars div {
+  grid-template-columns: 112px 1fr 44px;
+}
+
+/* Latency Mode Switcher */
+.latency-mode-bar {
+  display: inline-flex;
+  gap: 6px;
+  margin-bottom: 4px;
+  padding: 4px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.08);
+  width: fit-content;
+}
+
+.latency-mode-btn {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #b7c9be;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 160ms ease, color 160ms ease;
+}
+
+.latency-mode-btn.is-active {
+  background: #ffffff;
+  color: #163026;
+}
+
+.latency-row i b {
+  transition: width 360ms cubic-bezier(.22, .8, .22, 1);
+}
+
+@media (max-width: 720px) {
+  .probe-viewport {
+    aspect-ratio: 4 / 3;
+    min-height: 300px;
+  }
+  .probe-drag-hint {
+    display: none;
+  }
+}
+
+/* Scroll-safe 3D wheel-zoom interaction state & feedback */
+.stage-viewport::after,
+.probe-viewport::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  box-shadow: inset 0 0 0 0 rgba(167, 139, 250, 0);
+  transition: box-shadow 180ms ease;
+  z-index: 4;
+}
+
+.stage-viewport.is-zoom-active::after,
+.probe-viewport.is-zoom-active::after {
+  box-shadow: inset 0 0 0 1.5px rgba(167, 139, 250, 0.58);
 }
