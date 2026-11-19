@@ -376,7 +376,7 @@
       this.scrubberFill = root.querySelector('[data-stage-fill]');
       this.scrubberThumb = root.querySelector('[data-stage-thumb]');
 
-      this.cycleDuration = 16500; // ms for full 4-stage loop
+      this.cycleDuration = 20500; // ms for full 4-stage loop (longer Stage 4 for 3 full pulse cycles)
       this.progress = 0.02;
       this.animTime = 1.12; // Dedicated animation clock that freezes in place on pause
       this.playing = true;
@@ -412,7 +412,7 @@
       // Stage tabs (chapter jump shortcuts)
       this.stageButtons.forEach((btn, idx) => {
         btn.addEventListener('click', () => {
-          const targets = [0.06, 0.36, 0.64, 0.85];
+          const targets = [0.05, 0.29, 0.52, 0.74];
           this.progress = targets[idx];
           this.updateStageUI(idx, this.progress);
         });
@@ -747,64 +747,66 @@
     }
 
     computeTimeline(p) {
-      // 4-stage choreography over p in [0, 1]
-      // Stage 0: 0.00 - 0.22  Flat 2D RGB observation O_t
-      // Stage 1: 0.22 - 0.48  2D Image -> 3D Point Cloud lifting + camera orbit
-      // Stage 2: 0.48 - 0.74  Rigid 3D motion O_t -> O_{t+H} + VGGT feature delta scan
-      // Stage 3: 0.74 - 1.00  Z_delta spatial foresight queries + 3D trajectories -> return to O_t deployment
+      // 4-stage choreography over p in [0, 1] (20.5s total)
+      // Stage 0: 0.00 - 0.17 (~3.5s) Flat 2D RGB observation O_t
+      // Stage 1: 0.17 - 0.39 (~4.5s) 2D Image -> 3D Point Cloud lifting + camera orbit
+      // Stage 2: 0.39 - 0.62 (~4.7s) Rigid 3D motion O_t -> O_{t+H} + VGGT feature delta scan
+      // Stage 3: 0.62 - 1.00 (~7.8s) Z_delta schematic foresight ghost + 3 full streamline pulse cycles
       let stageIdx = 0;
       let stageLocal = 0;
-      if (p < 0.22) { stageIdx = 0; stageLocal = p / 0.22; }
-      else if (p < 0.48) { stageIdx = 1; stageLocal = (p - 0.22) / 0.26; }
-      else if (p < 0.74) { stageIdx = 2; stageLocal = (p - 0.48) / 0.26; }
-      else { stageIdx = 3; stageLocal = (p - 0.74) / 0.26; }
+      if (p < 0.17) { stageIdx = 0; stageLocal = p / 0.17; }
+      else if (p < 0.39) { stageIdx = 1; stageLocal = (p - 0.17) / 0.22; }
+      else if (p < 0.62) { stageIdx = 2; stageLocal = (p - 0.39) / 0.23; }
+      else { stageIdx = 3; stageLocal = (p - 0.62) / 0.38; }
 
-      // Smoothly return at very end [0.95, 1.00] for seamless looping
-      const loopReset = smoothstep(0.95, 1.0, p);
+      // Smoothly return at very end [0.955, 1.00] for seamless looping
+      const loopReset = smoothstep(0.955, 1.0, p);
 
       // 2D -> 3D lift factor
-      const unproject = smoothstep(0.21, 0.42, p) * (1.0 - loopReset);
+      const unproject = smoothstep(0.165, 0.34, p) * (1.0 - loopReset);
 
       // Photo plane opacity: crisp in Stage 0, dissolves to ghostly reference plane in Stage 1
-      const photoAlpha = (1.0 - smoothstep(0.18, 0.34, p)) * 0.94 + loopReset * 0.94;
-      const frameAlpha = (1.0 - smoothstep(0.45, 0.56, p)) * 0.85 + loopReset * 0.85;
+      const photoAlpha = (1.0 - smoothstep(0.145, 0.27, p)) * 0.94 + loopReset * 0.94;
+      const frameAlpha = (1.0 - smoothstep(0.36, 0.45, p)) * 0.85 + loopReset * 0.85;
 
       // Temporal 3D morph O_t -> O_{t+H} in Stage 2, then returns cleanly to solid O_t right as Stage 3 opens
-      const morphUp = smoothstep(0.47, 0.61, p);
-      const morphBack = smoothstep(0.72, 0.775, p);
+      const morphUp = smoothstep(0.385, 0.505, p);
+      const morphBack = smoothstep(0.605, 0.655, p);
       const morph = morphUp * (1.0 - morphBack);
 
       // VGGT feature delta reveal in Stage 2, fades out as Stage 3 deployment opens
-      const deltaIn = smoothstep(0.51, 0.60, p);
-      const deltaOut = smoothstep(0.72, 0.79, p);
+      const deltaIn = smoothstep(0.415, 0.495, p);
+      const deltaOut = smoothstep(0.605, 0.665, p);
       const deltaMix = deltaIn * (1.0 - deltaOut) * (1.0 - loopReset);
-      const scanX = lerp(-0.85, 1.25, smoothstep(0.50, 0.70, p));
+      const scanX = lerp(-0.85, 1.25, smoothstep(0.405, 0.585, p));
 
-      // Spatial transition queries Z_delta + holographic foresight ghost in Stage 3
-      const queryMix = smoothstep(0.73, 0.80, p) * (1.0 - smoothstep(0.94, 0.99, p));
+      // Spatial transition queries Z_delta + sparse target hologram in Stage 3 (full visibility ~6.0s -> 3 full pulse cycles)
+      const queryMix = smoothstep(0.615, 0.66, p) * (1.0 - smoothstep(0.945, 0.99, p));
 
       // Camera orbit keyframes (around camTarget)
-      // Base frontal camera matches original calibrated extrinsics: yaw=0, pitch=0.927 rad (53.1 deg), dist=1.08
+      // Base frontal camera matches original calibrated extrinsics: yaw=0, pitch=0.927 rad (53.1 deg), dist=1.14
       const basePitch = 0.927;
-      let yaw = lerp(-0.04, 0.04, smoothstep(0.0, 0.22, p));
+      let yaw = lerp(-0.04, 0.04, smoothstep(0.0, 0.17, p));
       let pitch = basePitch;
       let dist = 1.14;
 
       // Lift into sweeping 3/4 isometric perspective
-      const t1 = smoothstep(0.20, 0.48, p);
+      const t1 = smoothstep(0.16, 0.39, p);
       yaw = lerp(yaw, 0.56, t1);
       pitch = lerp(pitch, 0.56, t1);
       dist = lerp(dist, 1.38, t1);
 
       // Orbit closer toward AGILEX arm during VGGT delta reveal
-      const t2 = smoothstep(0.48, 0.74, p);
+      const t2 = smoothstep(0.39, 0.62, p);
       yaw = lerp(yaw, 0.26, t2);
       pitch = lerp(pitch, 0.62, t2);
       dist = lerp(dist, 1.26, t2);
 
       // Side-3/4 angle in Stage 4 so the arm's forward O_t -> O_{t+H} displacement separates cleanly across screen
-      const t3 = smoothstep(0.74, 0.95, p);
+      const t3 = smoothstep(0.62, 0.72, p);
+      const t3Drift = smoothstep(0.72, 0.95, p);
       yaw = lerp(yaw, 0.86, t3);
+      yaw = lerp(yaw, 0.74, t3Drift);
       pitch = lerp(pitch, 0.40, t3);
       dist = lerp(dist, 1.24, t3);
 
@@ -964,7 +966,7 @@
           if (!tooClose) chosen.push(q);
         }
 
-        const pulseCycle = ((this.animTime * 0.55) % 1.0 + 1.0) % 1.0;
+        const pulseCycle = ((this.animTime * 0.52) % 1.0 + 1.0) % 1.0;
         for (let i = 0; i < chosen.length; i += 1) {
           const q = chosen[i];
           const p0 = q.cur;
