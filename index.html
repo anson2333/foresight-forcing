@@ -6,6 +6,13 @@
   <meta name="description" content="Foresight Forcing learns spatial transition queries from correspondence-aligned changes in 3D teacher features for robotic manipulation.">
   <meta name="author" content="Mishuo Han, Zhixuan Liang, Zhaoyuan Wan, Wendi Chen, Jiarui Chen, Xinkai Wang, Yue Ma, Yu Zhou, Junting Chen, Yao Mu, Jun Lv, Chuan Wen, Cewu Lu">
   <meta name="theme-color" content="#111827">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Foresight Forcing: Learning Spatial Foresight for Robotic Manipulation">
+  <meta property="og:description" content="We distill correspondence-aligned changes in a pretrained 3D feature space into spatial transition queries that directly condition action generation.">
+  <meta property="og:image" content="assets/images/real-world-overview.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Foresight Forcing: Learning Spatial Foresight for Robotic Manipulation">
+  <meta name="twitter:description" content="Learning spatial transition queries from 3D geometric feature deltas for robotic manipulation.">
   <title>Foresight Forcing | Spatial Foresight for Robotic Manipulation</title>
   <link rel="icon" type="image/svg+xml" href="assets/brand/f2-mark.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -15,38 +22,6 @@
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-
-  <section class="intro-demo" data-intro-demo data-state="idle" aria-label="Foresight Forcing concept overview">
-    <div class="intro-shell">
-      <div class="intro-topbar">
-        <a class="intro-brand" href="#top" aria-label="Foresight Forcing home">
-          <img src="assets/brand/f2-mark.svg" alt="" width="42" height="42">
-          <span>Foresight Forcing</span>
-        </a>
-        <button class="intro-skip" type="button" data-intro-skip>Skip intro</button>
-      </div>
-
-      <div class="intro-main">
-        <div class="concept-stage" data-intro-visual>
-          <canvas class="concept-canvas" data-concept-canvas role="img" aria-label="Concept animation showing current and future observations jointly encoded by VGGT, their feature difference supervising spatial queries without directly producing actions, and current features plus predicted spatial foresight conditioning the Action Expert"></canvas>
-          <div class="concept-legend" aria-hidden="true">
-            <span><i class="legend-current"></i>Current-only path</span>
-            <span><i class="legend-target"></i>Training-only teacher</span>
-            <span><i class="legend-foresight"></i>Spatial query</span>
-          </div>
-        </div>
-
-        <div class="intro-copy">
-          <p class="intro-kicker">The core idea</p>
-          <h1>Learn the change. Predict it from now.</h1>
-          <p class="intro-description">Paired observations reveal a spatial change in frozen 3D features. That change supervises <em>Z<sub>Δ</sub></em>; at inference, the predicted query joins current visual features to guide the Action Expert.</p>
-          <button class="intro-play" type="button" data-intro-play><span aria-hidden="true">▶</span>Play concept</button>
-          <div class="intro-progress" data-intro-progress aria-hidden="true"><i></i></div>
-          <div class="intro-mode"><i></i><span data-intro-status>Ready · click to play</span></div>
-        </div>
-      </div>
-    </div>
-  </section>
 
   <header class="site-header" data-header>
     <nav class="nav-shell" aria-label="Main navigation">
@@ -59,12 +34,13 @@
         <span></span><span></span>
       </button>
       <div class="nav-links" id="nav-links" data-nav-links>
+        <a href="#foresight-stage">3D Demo</a>
         <a href="#insight">Insight</a>
         <a href="#method">Method</a>
         <a href="#results">Results</a>
         <a href="#real-world">Real world</a>
         <a href="#citation">Citation</a>
-        <button class="intro-replay" type="button" data-intro-replay aria-label="Replay method intro" title="Replay method intro">↻</button>
+        <button class="intro-replay" type="button" data-intro-replay aria-label="Restart 3D concept demo" title="Restart 3D concept demo">↻</button>
       </div>
     </nav>
   </header>
@@ -72,67 +48,112 @@
   <main id="main">
     <section class="hero" id="top">
       <div class="hero-grid" aria-hidden="true"></div>
-      <div class="hero-inner">
+      <div class="hero-inner hero-centered">
         <div class="hero-copy">
           <p class="eyebrow">World Action Models · 3D Transition Learning</p>
-          <h1>Foresight<br><em>Forcing</em></h1>
+          <h1>Foresight <em>Forcing</em></h1>
           <p class="hero-subtitle">Learning Spatial Foresight for Robotic Manipulation</p>
           <div class="hero-people" aria-label="Authors and affiliations">
-          <p class="hero-authors">
-            <a href="https://openreview.net/profile?id=~Mishuo_Han1">Mishuo Han</a>,
-            <a href="https://openreview.net/profile?id=~Zhixuan_Liang2">Zhixuan Liang</a>,
-            <a href="https://openreview.net/profile?id=~Zhaoyuan_Wan2">Zhaoyuan Wan</a>,
-            <a href="https://openreview.net/profile?id=~Wendi_Chen1">Wendi Chen</a>,
-            <a href="https://openreview.net/profile?id=~Jiarui_Chen4">Jiarui Chen</a>,
-            <a href="https://openreview.net/profile?id=~Xinkai_Wang1">Xinkai Wang</a>,
-            <a href="https://openreview.net/profile?id=~Yue_Ma2">Yue Ma</a>,
-            <a href="https://openreview.net/profile?id=~Yu_Zhou21">Yu Zhou</a>,
-            <a href="https://openreview.net/profile?id=~Junting_Chen2">Junting Chen</a>,
-            <a href="https://openreview.net/profile?id=~Yao_Mu1">Yao Mu</a>,
-            <a href="https://openreview.net/profile?id=~Jun_Lv2">Jun Lv</a>,
-            <a href="https://openreview.net/profile?id=~Chuan_Wen1">Chuan Wen</a>,
-            <a href="https://openreview.net/profile?id=~Cewu_Lu3">Cewu Lu</a>
-          </p>
-          <ol class="hero-affiliations">
-            <li><a href="https://www.sjtu.edu.cn/">Shanghai Jiao Tong University</a><span>sjtu.edu.cn</span></li>
-            <li><a href="https://www.princeton.edu/">Princeton University</a><span>princeton.edu</span></li>
-            <li><a href="https://www.sii.edu.cn/">Shanghai Innovation Institute</a><span>sii.edu.cn</span></li>
-            <li><a href="https://hkust.edu.hk/">The Hong Kong University of Science and Technology</a><span>ust.hk</span></li>
-            <li><a href="https://www.nus.edu.sg/">National University of Singapore</a><span>u.nus.edu</span></li>
-          </ol>
+            <p class="hero-authors">
+              <a href="https://openreview.net/profile?id=~Mishuo_Han1">Mishuo Han</a><sup>1,*</sup>,
+              <a href="https://openreview.net/profile?id=~Zhixuan_Liang2">Zhixuan Liang</a><sup>2,*,†</sup>,
+              <a href="https://openreview.net/profile?id=~Zhaoyuan_Wan2">Zhaoyuan Wan</a><sup>1,*</sup>,
+              <a href="https://openreview.net/profile?id=~Wendi_Chen1">Wendi Chen</a><sup>1</sup>,
+              <a href="https://openreview.net/profile?id=~Jiarui_Chen4">Jiarui Chen</a><sup>3</sup>,
+              <a href="https://openreview.net/profile?id=~Xinkai_Wang1">Xinkai Wang</a><sup>3</sup>,
+              <a href="https://openreview.net/profile?id=~Yue_Ma2">Yue Ma</a><sup>4</sup>,
+              <a href="https://openreview.net/profile?id=~Yu_Zhou21">Yu Zhou</a><sup>3</sup>,
+              <a href="https://openreview.net/profile?id=~Junting_Chen2">Junting Chen</a><sup>5</sup>,
+              <a href="https://openreview.net/profile?id=~Yao_Mu1">Yao Mu</a><sup>1</sup>,
+              <a href="https://openreview.net/profile?id=~Jun_Lv2">Jun Lv</a><sup>1</sup>,
+              <a href="https://openreview.net/profile?id=~Chuan_Wen1">Chuan Wen</a><sup>1</sup>,
+              <a href="https://openreview.net/profile?id=~Cewu_Lu3">Cewu Lu</a><sup>1,†</sup>
+            </p>
+            <ol class="hero-affiliations">
+              <li><sup>1</sup> <a href="https://www.sjtu.edu.cn/">Shanghai Jiao Tong University</a></li>
+              <li><sup>2</sup> <a href="https://www.princeton.edu/">Princeton University</a></li>
+              <li><sup>3</sup> <a href="https://www.sii.edu.cn/">Shanghai Innovation Institute</a></li>
+              <li><sup>4</sup> <a href="https://hkust.edu.hk/">HKUST</a></li>
+              <li><sup>5</sup> <a href="https://www.nus.edu.sg/">National University of Singapore</a></li>
+            </ol>
+            <p class="hero-footnotes"><sup>*</sup> Equal contribution &nbsp;·&nbsp; <sup>†</sup> Corresponding authors</p>
           </div>
           <p class="hero-summary">
-            We distill correspondence-aligned changes in a pretrained 3D feature space into spatial transition queries that directly condition action generation.
+            We distill correspondence-aligned changes in a pretrained 3D feature space into spatial transition queries that directly condition action generation—without future observations or the 3D teacher at deployment.
           </p>
           <div class="hero-actions" aria-label="Project links">
             <span class="button button-primary is-disabled" aria-disabled="true">Paper · forthcoming</span>
             <span class="button button-secondary is-disabled" aria-disabled="true">Code · forthcoming</span>
+            <a class="button button-accent" href="#real-world">Real-World Videos</a>
             <a class="button button-quiet" href="#citation">BibTeX</a>
           </div>
-          <div class="hero-metrics" aria-label="Headline results">
-            <div><strong>95.01%</strong><span>RoboTwin 2.0 Full</span></div>
-            <div><strong>84.5%</strong><span>LIBERO-Plus</span></div>
-            <div><strong>85.8%</strong><span>Real-world mean</span></div>
-            <div><strong>+4.1%</strong><span>Eager latency</span></div>
+        </div>
+
+        <div class="foresight-stage" id="foresight-stage" data-foresight-stage aria-label="Interactive 3D point cloud and VGGT feature delta animation">
+          <div class="stage-topbar">
+            <div class="stage-meta-left">
+              <span class="stage-live-dot" aria-hidden="true"></span>
+              <span class="stage-badge" data-stage-badge>STAGE 01 · CURRENT OBSERVATION</span>
+            </div>
+            <div class="stage-topbar-right">
+              <div class="stage-thumbs" aria-label="Paired RoboTwin observations">
+                <span class="stage-thumb is-active" data-thumb-current>
+                  <img src="assets/images/scene_before.jpg" alt="Current observation O_t" width="64" height="48">
+                  <b>O<sub>t</sub></b>
+                </span>
+                <span class="stage-thumb" data-thumb-future>
+                  <img src="assets/images/scene_after.jpg" alt="Future observation O_t+H" width="64" height="48">
+                  <b>O<sub>t+H</sub></b>
+                </span>
+              </div>
+              <div class="stage-tools">
+                <button class="stage-btn" type="button" data-stage-toggle aria-pressed="false" title="Pause animation"><span aria-hidden="true">❚❚</span> Pause</button>
+                <button class="stage-icon-btn" type="button" data-stage-zoom-out aria-label="Zoom out 3D view" title="Zoom out">−</button>
+                <button class="stage-icon-btn" type="button" data-stage-zoom-in aria-label="Zoom in 3D view" title="Zoom in">+</button>
+                <button class="stage-icon-btn" type="button" data-stage-reset aria-label="Reset 3D camera view" title="Reset camera">↺</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-viewport">
+            <canvas class="stage-canvas" data-stage-canvas role="img" aria-label="Interactive 3D point cloud animation transitioning from a 2D RoboTwin RGB image to 3D geometry, measured VGGT feature deltas, and spatial foresight queries"></canvas>
+            <div class="stage-overlay-bottom">
+              <div class="stage-caption">
+                <strong data-stage-title>Start from a standard 2D RGB observation O_t</strong>
+                <p data-stage-detail>Real RoboTwin scene with cluttered tabletop props (soy sauce bottle, plate, scale, blocks) and an AGILEX arm.</p>
+              </div>
+              <div class="stage-legend-wrap">
+                <div class="stage-legend" aria-label="3D visualization color key">
+                  <span><i class="swatch-static"></i>Static 3D scene</span>
+                  <span><i class="swatch-delta"></i>Measured VGGT Δ</span>
+                  <span><i class="swatch-query"></i>Spatial query Z<sub>Δ</sub></span>
+                </div>
+                <span class="stage-hint">Drag to orbit 3D · 7,884 measured RoboTwin points</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="stage-tabs" role="tablist" aria-label="Concept animation stages">
+            <button class="stage-tab is-active" type="button" role="tab" aria-selected="true" data-stage-select="0">
+              <span><b>01</b> 2D Observation</span><i></i>
+            </button>
+            <button class="stage-tab" type="button" role="tab" aria-selected="false" data-stage-select="1">
+              <span><b>02</b> 3D Point Cloud</span><i></i>
+            </button>
+            <button class="stage-tab" type="button" role="tab" aria-selected="false" data-stage-select="2">
+              <span><b>03</b> VGGT Feature Δ</span><i></i>
+            </button>
+            <button class="stage-tab" type="button" role="tab" aria-selected="false" data-stage-select="3">
+              <span><b>04</b> Spatial Queries Z<sub>Δ</sub></span><i></i>
+            </button>
           </div>
         </div>
-        <div class="hero-visual" aria-label="Method summary graphic">
-          <div class="hero-visual-top"><span>From scene change</span><b>to action</b></div>
-          <div class="hero-visual-field">
-            <i class="field-grid"></i>
-            <i class="field-object object-current"></i>
-            <i class="field-object object-future"></i>
-            <i class="field-vector vector-one"></i>
-            <i class="field-vector vector-two"></i>
-            <i class="field-vector vector-three"></i>
-            <span class="field-label label-current">O<sub>t</sub></span>
-            <span class="field-label label-future">O<sub>t+H</sub></span>
-            <span class="field-label label-delta">Y<sub>Δ</sub></span>
-          </div>
-          <div class="hero-visual-route">
-            <span>Y<sub>Δ</sub></span><i></i><strong>Z<sub>Δ</sub></strong><i></i><span class="route-action">A<sub>t:t+H−1</sub></span>
-          </div>
-          <p>Training reveals the change. Deployment predicts it from the current view.</p>
+
+        <div class="hero-metrics" aria-label="Headline results">
+          <div><strong>95.01%</strong><span>RoboTwin 2.0 Full</span></div>
+          <div><strong>84.5%</strong><span>LIBERO-Plus</span></div>
+          <div><strong>85.8%</strong><span>Real-world mean</span></div>
+          <div><strong>+4.1%</strong><span>Eager latency</span></div>
         </div>
       </div>
       <a class="hero-next" href="#insight" aria-label="Continue to key insight">
@@ -312,28 +333,180 @@
           <div class="section-heading">
             <p class="section-kicker">Physical manipulation</p>
             <h2>Six tasks, one jointly trained policy.</h2>
-            <p>Foresight Forcing is evaluated on long-horizon bimanual tasks spanning rigid objects, articulated tools, deformable cloth, and sequential placement.</p>
+            <p>Foresight Forcing is evaluated over 15 trials per task on long-horizon bimanual manipulation spanning rigid objects, articulated tools, deformable cloth, and sequential placement.</p>
           </div>
           <div class="real-score">
             <strong>85.8%</strong>
-            <span>mean task score</span>
+            <span>mean score (vs. 83.5% π<sub>0.5</sub> · 70.2% ImageWAM)</span>
           </div>
         </div>
 
-        <figure class="real-overview">
-          <img src="assets/images/real-world-overview.png" alt="The six real-world evaluation tasks: cup stacking, towel folding, egg transfer, breakfast preparation, tool stowing, and size sorting" width="733" height="462" loading="lazy">
-          <figcaption>Representative front-view observations from the six real-world tasks.</figcaption>
-        </figure>
+        <div class="real-video-showcase" data-video-gallery>
+          <div class="real-video-featured">
+            <div class="video-stage-bar">
+              <div class="video-stage-meta">
+                <span class="video-task-pill" data-video-title>Cup stacking</span>
+                <span class="video-score-pill" data-video-score>F² 93% · ImageWAM 67% · π₀.₅ 73%</span>
+              </div>
+              <div class="video-speed-controls" aria-label="Playback speed">
+                <button class="speed-btn is-active" type="button" data-video-speed="1">1×</button>
+                <button class="speed-btn" type="button" data-video-speed="2">2×</button>
+              </div>
+            </div>
+            <div class="video-frame">
+              <video data-featured-video src="assets/videos/cup_stacking.mp4" poster="assets/videos/cup_stacking.jpg" controls muted loop playsinline preload="metadata"></video>
+            </div>
+            <p class="video-caption" data-video-desc>Bimanual pyramid cup stacking requiring precise vertical alignment and contact-rich placement (full-task completion).</p>
+          </div>
 
-        <div class="task-strip" aria-label="Real-world tasks">
-          <span>Cup stacking</span>
-          <span>Towel folding</span>
-          <span>Egg transfer</span>
-          <span>Breakfast preparation</span>
-          <span>Tool stowing</span>
-          <span>Size sorting</span>
+          <div class="real-video-grid" role="tablist" aria-label="Select real-world rollout video">
+            <button class="video-card is-active" type="button" role="tab" aria-selected="true" data-video-task="cup_stacking">
+              <div class="video-card-thumb">
+                <img src="assets/videos/cup_stacking.jpg" alt="Cup stacking rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Cup stacking</strong>
+                <span><b>93%</b> · +26 vs ImageWAM</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="towel_folding">
+              <div class="video-card-thumb">
+                <img src="assets/videos/towel_folding.jpg" alt="Towel folding rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Towel folding</strong>
+                <span><b>100%</b> · Deformable cloth</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="egg_transfer">
+              <div class="video-card-thumb">
+                <img src="assets/videos/egg_transfer.jpg" alt="Egg transfer rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Egg transfer</strong>
+                <span><b>80%</b> · Delicate grasping</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="breakfast_preparation">
+              <div class="video-card-thumb">
+                <img src="assets/videos/breakfast_preparation.jpg" alt="Breakfast preparation rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Breakfast prep</strong>
+                <span><b>80%</b> · Multi-step sequence</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="tool_stowing">
+              <div class="video-card-thumb">
+                <img src="assets/videos/tool_stowing.jpg" alt="Tool stowing rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Tool stowing<sup>*</sup></strong>
+                <span><b>65.0%</b> · +33.3 vs ImageWAM</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="size_sorting">
+              <div class="video-card-thumb">
+                <img src="assets/videos/size_sorting.jpg" alt="Size sorting rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Size sorting<sup>*</sup></strong>
+                <span><b>96.2%</b> · 15-block ordering</span>
+              </div>
+            </button>
+          </div>
         </div>
-        <p class="media-status"><span aria-hidden="true"></span> Dual-view rollout videos will accompany the arXiv release.</p>
+
+        <div class="real-table-wrap">
+          <div class="real-table-header">
+            <div>
+              <p class="section-kicker">Quantitative breakdown</p>
+              <h3>Real-world task scores (15 trials per task)</h3>
+            </div>
+            <button class="overview-link-btn" type="button" data-expand-image="assets/images/real-world-overview.png">View 6-task overview figure ↗</button>
+          </div>
+          <div class="real-table-scroll">
+            <table class="real-table">
+              <thead>
+                <tr>
+                  <th scope="col">Task</th>
+                  <th scope="col">Metric</th>
+                  <th scope="col">π<sub>0.5</sub> (Pretrained)</th>
+                  <th scope="col">ImageWAM</th>
+                  <th scope="col" class="is-ours">F<sup>2</sup> (Ours)</th>
+                  <th scope="col">Δ vs ImageWAM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cup stacking</td>
+                  <td class="col-muted">Full completion</td>
+                  <td>73.0%</td>
+                  <td>67.0%</td>
+                  <td class="is-ours"><strong>93.0%</strong></td>
+                  <td class="col-gain">+26.0%</td>
+                </tr>
+                <tr>
+                  <td>Towel folding</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>100.0%</strong></td>
+                  <td>87.0%</td>
+                  <td class="is-ours"><strong>100.0%</strong></td>
+                  <td class="col-gain">+13.0%</td>
+                </tr>
+                <tr>
+                  <td>Egg transfer</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>80.0%</strong></td>
+                  <td>73.0%</td>
+                  <td class="is-ours"><strong>80.0%</strong></td>
+                  <td class="col-gain">+7.0%</td>
+                </tr>
+                <tr>
+                  <td>Breakfast preparation</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>87.0%</strong></td>
+                  <td>73.0%</td>
+                  <td class="is-ours">80.0%</td>
+                  <td class="col-gain">+7.0%</td>
+                </tr>
+                <tr>
+                  <td>Tool stowing<sup>*</sup></td>
+                  <td class="col-muted">Item-level (4 tools)</td>
+                  <td>63.3%</td>
+                  <td>31.7%</td>
+                  <td class="is-ours"><strong>65.0%</strong></td>
+                  <td class="col-gain">+33.3%</td>
+                </tr>
+                <tr>
+                  <td>Size sorting<sup>*</sup></td>
+                  <td class="col-muted">Item-level (15 blocks)</td>
+                  <td><strong>97.7%</strong></td>
+                  <td>89.3%</td>
+                  <td class="is-ours">96.2%</td>
+                  <td class="col-gain">+6.9%</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Unweighted mean</strong></td>
+                  <td class="col-muted">6 tasks</td>
+                  <td>83.5%</td>
+                  <td>70.2%</td>
+                  <td class="is-ours"><strong>85.8%</strong></td>
+                  <td class="col-gain"><strong>+15.6%</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p class="real-table-note"><sup>*</sup> Item-level evaluation. F<sup>2</sup> is trained jointly across all six tasks without large-scale robot pretraining, yet matches or exceeds pretrained π<sub>0.5</sub> on 4 of 6 tasks and outperforms ImageWAM by +15.6% on average.</p>
+        </div>
       </div>
     </section>
 
@@ -404,6 +577,7 @@
     </div>
   </dialog>
 
+  <script src="js/foresight-3d.js"></script>
   <script src="js/main.js"></script>
 </body>
 </html>
