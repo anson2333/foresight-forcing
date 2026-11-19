@@ -55,6 +55,106 @@ if ('IntersectionObserver' in window) {
   revealItems.forEach((item) => item.classList.add('is-visible'));
 }
 
+/* Real Model Z_delta vs VGGT Teacher Interactive Explorer */
+const zdeltaCases = {
+  rt_7414: {
+    prefix: 'assets/images/zdelta/rt_7414',
+    desc: 'Left AGILEX arm lifts the green bottle on a randomized cluttered tabletop (step 10,490). With zero future frames supplied, F<sup>2</sup> recovers the teacher VGGT feature delta across the moving arm and bottle while suppressing static distractors.',
+    metrics: [
+      ['r = 0.901', 'Norm Pearson'],
+      ['0.686', 'Top-25% Cos'],
+      ['0.625', 'Top-20% IoU']
+    ]
+  },
+  rt_932848: {
+    prefix: 'assets/images/zdelta/rt_932848',
+    desc: 'Arm places the red block onto the blue target pad across textured clutter (RoboTwin randomized split, step 10,490). Predicted Z<sub>Δ</sub> matches frozen VGGT teacher magnitude with r = 0.955 and global patch cosine 0.720.',
+    metrics: [
+      ['r = 0.955', 'Norm Pearson'],
+      ['0.720', 'Patch Cos'],
+      ['0.472', 'Top-20% IoU']
+    ]
+  },
+  lib_134054: {
+    prefix: 'assets/images/zdelta/lib_134054',
+    desc: 'Held-out LIBERO-Goal TEST sample (push plate to front of stove, step 33,060). Predicted from O<sub>t</sub> alone, Z<sub>Δ</sub> localizes the moving arm and stove interaction zone (r = 0.876; frozen displacement probe achieves 0.996 direction cosine).',
+    metrics: [
+      ['r = 0.876', 'Norm Pearson'],
+      ['0.655', 'Patch Cos'],
+      ['0.667', 'Top-20% IoU']
+    ]
+  },
+  lib_194590: {
+    prefix: 'assets/images/zdelta/lib_194590',
+    desc: 'LIBERO-10 mug-to-microwave manipulation (step 33,060). Student Z<sub>Δ</sub> predictions concentrate sharply on the active robot wrist and mug trajectory, achieving 0.818 top-20% IoU with the training-only VGGT teacher.',
+    metrics: [
+      ['r = 0.789', 'Norm Pearson'],
+      ['0.653', 'Patch Cos'],
+      ['0.818', 'Top-20% IoU']
+    ]
+  }
+};
+
+const zdRoot = document.querySelector('[data-zdelta-explorer]');
+if (zdRoot) {
+  const tabs = zdRoot.querySelectorAll('[data-zd-case]');
+  const modeBtns = zdRoot.querySelectorAll('[data-zd-mode]');
+  const gridPanel = zdRoot.querySelector('[data-zd-grid]');
+  const wipePanel = zdRoot.querySelector('[data-zd-wipe-panel]');
+  const wipeStage = zdRoot.querySelector('[data-zd-wipe-stage]');
+  const wipeRange = zdRoot.querySelector('[data-zd-wipe-range]');
+  const descEl = zdRoot.querySelector('[data-zd-desc]');
+  const metricsEl = zdRoot.querySelector('[data-zd-metrics]');
+
+  function renderZdCase(key) {
+    const item = zdeltaCases[key];
+    if (!item) return;
+    tabs.forEach((btn) => {
+      const active = btn.dataset.zdCase === key;
+      btn.classList.toggle('is-active', active);
+      btn.setAttribute('aria-selected', String(active));
+    });
+    ['cur', 'fut', 'teacher', 'student'].forEach((slot) => {
+      const img = zdRoot.querySelector(`[data-zd-img="${slot}"]`);
+      if (img) img.src = `${item.prefix}_${slot}.jpg`;
+    });
+    const wStu = zdRoot.querySelector('[data-zd-wipe="student"]');
+    const wTea = zdRoot.querySelector('[data-zd-wipe="teacher"]');
+    const rCur = zdRoot.querySelector('[data-zd-wipe-ref="cur"]');
+    const rFut = zdRoot.querySelector('[data-zd-wipe-ref="fut"]');
+    if (wStu) wStu.src = `${item.prefix}_student.jpg`;
+    if (wTea) wTea.src = `${item.prefix}_teacher.jpg`;
+    if (rCur) rCur.src = `${item.prefix}_cur.jpg`;
+    if (rFut) rFut.src = `${item.prefix}_fut.jpg`;
+
+    if (descEl) descEl.innerHTML = item.desc;
+    if (metricsEl) {
+      metricsEl.innerHTML = item.metrics
+        .map(([val, lbl]) => `<span><b>${val}</b> ${lbl}</span>`)
+        .join('') + '<span class="badge-zero">O<sub>t</sub> only · no future frame</span>';
+    }
+  }
+
+  tabs.forEach((btn) => {
+    btn.addEventListener('click', () => renderZdCase(btn.dataset.zdCase));
+  });
+
+  modeBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const mode = btn.dataset.zdMode;
+      modeBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
+      if (gridPanel) gridPanel.hidden = mode !== 'grid';
+      if (wipePanel) wipePanel.hidden = mode !== 'wipe';
+    });
+  });
+
+  if (wipeRange && wipeStage) {
+    wipeRange.addEventListener('input', () => {
+      wipeStage.style.setProperty('--wipe', `${wipeRange.value}%`);
+    });
+  }
+}
+
 /* Simulation Benchmarks Explorer */
 const resultData = {
   robotwin: {
@@ -147,6 +247,7 @@ const realVideoTasks = {
   cup_stacking: {
     title: 'Cup stacking',
     score: 'F² 93% · ImageWAM 67% · π₀.₅ 73%',
+    rate: '4× real-time · full rollout',
     desc: 'Bimanual pyramid cup stacking requiring precise vertical alignment and contact-rich placement (full-task completion).',
     src: 'assets/videos/cup_stacking.mp4',
     poster: 'assets/videos/cup_stacking.jpg'
@@ -154,6 +255,7 @@ const realVideoTasks = {
   towel_folding: {
     title: 'Towel folding',
     score: 'F² 100% · ImageWAM 87% · π₀.₅ 100%',
+    rate: '4× real-time · full rollout',
     desc: 'Coordinated bimanual folding of deformable cloth with continuous geometry changes across folding creases (full-task completion).',
     src: 'assets/videos/towel_folding.mp4',
     poster: 'assets/videos/towel_folding.jpg'
@@ -161,6 +263,7 @@ const realVideoTasks = {
   egg_transfer: {
     title: 'Egg transfer',
     score: 'F² 80% · ImageWAM 73% · π₀.₅ 80%',
+    rate: '4× real-time · full rollout',
     desc: 'Delicate picking and transfer of eggs into target slots without dropping or crushing (full-task completion).',
     src: 'assets/videos/egg_transfer.mp4',
     poster: 'assets/videos/egg_transfer.jpg'
@@ -168,6 +271,7 @@ const realVideoTasks = {
   breakfast_preparation: {
     title: 'Breakfast preparation',
     score: 'F² 80% · ImageWAM 73% · π₀.₅ 87%',
+    rate: '4× real-time · full rollout',
     desc: 'Long-horizon sequential food assembly across multiple objects and intermediate configurations (full-task completion).',
     src: 'assets/videos/breakfast_preparation.mp4',
     poster: 'assets/videos/breakfast_preparation.jpg'
@@ -175,6 +279,7 @@ const realVideoTasks = {
   tool_stowing: {
     title: 'Tool stowing*',
     score: 'F² 65.0% · ImageWAM 31.7% · π₀.₅ 63.3%',
+    rate: '4× real-time · full rollout',
     desc: 'Sequential placement of four articulated tools into fitted organizer slots (item-level score across 4 tools per trial).',
     src: 'assets/videos/tool_stowing.mp4',
     poster: 'assets/videos/tool_stowing.jpg'
@@ -182,6 +287,7 @@ const realVideoTasks = {
   size_sorting: {
     title: 'Size sorting*',
     score: 'F² 96.2% · ImageWAM 89.3% · π₀.₅ 97.7%',
+    rate: '4× real-time · full rollout',
     desc: 'Continuous sorting of 15 blocks by physical size into designated bins (item-level score across 15 blocks per trial).',
     src: 'assets/videos/size_sorting.mp4',
     poster: 'assets/videos/size_sorting.jpg'
@@ -193,6 +299,7 @@ if (galleryRoot) {
   const videoEl = galleryRoot.querySelector('[data-featured-video]');
   const titleEl = galleryRoot.querySelector('[data-video-title]');
   const scoreEl = galleryRoot.querySelector('[data-video-score]');
+  const rateEl = galleryRoot.querySelector('[data-video-rate-tag]');
   const descEl = galleryRoot.querySelector('[data-video-desc]');
   const cards = galleryRoot.querySelectorAll('[data-video-task]');
   const speedBtns = galleryRoot.querySelectorAll('[data-video-speed]');
@@ -208,6 +315,7 @@ if (galleryRoot) {
     });
     titleEl.textContent = item.title;
     scoreEl.textContent = item.score;
+    if (rateEl) rateEl.textContent = item.rate;
     descEl.textContent = item.desc;
     videoEl.poster = item.poster;
     videoEl.src = item.src;

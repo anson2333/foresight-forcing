@@ -261,25 +261,82 @@
           <p>Readouts show correspondence with teacher feature changes and recover future image-space displacement from frozen transition queries.</p>
         </div>
 
+        <div class="zdelta-explorer" data-zdelta-explorer aria-label="Interactive real model Z_delta prediction explorer">
+          <div class="zdelta-topbar">
+            <div class="zdelta-tabs" role="tablist" aria-label="Select real model evaluation case">
+              <button class="zdelta-tab is-active" type="button" role="tab" aria-selected="true" data-zd-case="rt_7414">
+                <strong>RoboTwin · Lift bottle</strong><span>Randomized · r = 0.90</span>
+              </button>
+              <button class="zdelta-tab" type="button" role="tab" aria-selected="false" data-zd-case="rt_932848">
+                <strong>RoboTwin · Place block</strong><span>Randomized · r = 0.95</span>
+              </button>
+              <button class="zdelta-tab" type="button" role="tab" aria-selected="false" data-zd-case="lib_134054">
+                <strong>LIBERO · Push plate</strong><span>Held-out TEST · r = 0.88</span>
+              </button>
+              <button class="zdelta-tab" type="button" role="tab" aria-selected="false" data-zd-case="lib_194590">
+                <strong>LIBERO · Mug to microwave</strong><span>LIBERO-10 · IoU = 0.82</span>
+              </button>
+            </div>
+            <div class="zdelta-mode-switch" role="group" aria-label="Comparison view mode">
+              <button class="zdelta-mode-btn is-active" type="button" data-zd-mode="grid">4-Panel</button>
+              <button class="zdelta-mode-btn" type="button" data-zd-mode="wipe">Wipe Slider</button>
+            </div>
+          </div>
+
+          <div class="zdelta-body">
+            <div class="zdelta-grid" data-zd-grid>
+              <figure class="zdelta-card">
+                <div class="zdelta-card-head"><span>01 · Current O<sub>t</sub></span><small>Only visual input</small></div>
+                <img data-zd-img="cur" src="assets/images/zdelta/rt_7414_cur.jpg" alt="Current observation O_t" loading="lazy">
+              </figure>
+              <figure class="zdelta-card">
+                <div class="zdelta-card-head"><span>02 · Future O<sub>t+H</sub></span><small>Unseen by F<sup>2</sup></small></div>
+                <img data-zd-img="fut" src="assets/images/zdelta/rt_7414_fut.jpg" alt="Ground-truth future observation O_t+H" loading="lazy">
+              </figure>
+              <figure class="zdelta-card">
+                <div class="zdelta-card-head"><span>03 · VGGT Teacher ‖Y<sub>Δ</sub>‖<sub>2</sub></span><small>Training target</small></div>
+                <img data-zd-img="teacher" src="assets/images/zdelta/rt_7414_teacher.jpg" alt="Frozen VGGT teacher feature delta" loading="lazy">
+              </figure>
+              <figure class="zdelta-card is-student">
+                <div class="zdelta-card-head"><span>04 · Real F<sup>2</sup> ‖D(Z<sub>Δ</sub>)‖<sub>2</sub></span><small>Zero future input</small></div>
+                <img data-zd-img="student" src="assets/images/zdelta/rt_7414_student.jpg" alt="Real F^2 student Z_delta prediction" loading="lazy">
+              </figure>
+            </div>
+
+            <div class="zdelta-wipe-panel" data-zd-wipe-panel hidden>
+              <div class="zdelta-wipe-stage" data-zd-wipe-stage style="--wipe: 50%">
+                <img class="wipe-base" data-zd-wipe="student" src="assets/images/zdelta/rt_7414_student.jpg" alt="Real F^2 Student Z_delta prediction">
+                <div class="wipe-clip">
+                  <img class="wipe-top" data-zd-wipe="teacher" src="assets/images/zdelta/rt_7414_teacher.jpg" alt="Frozen VGGT Teacher Y_delta target">
+                </div>
+                <span class="wipe-label wipe-left">VGGT Teacher ‖Y<sub>Δ</sub>‖<sub>2</sub> (paired frames)</span>
+                <span class="wipe-label wipe-right">Real F<sup>2</sup> Student ‖D(Z<sub>Δ</sub>)‖<sub>2</sub> (O<sub>t</sub> only)</span>
+                <div class="wipe-divider" aria-hidden="true"><span>⇄</span></div>
+                <input class="wipe-range" type="range" min="0" max="100" value="50" aria-label="Slide to compare VGGT Teacher vs Real F^2 Student prediction" data-zd-wipe-range>
+              </div>
+              <div class="zdelta-wipe-refs">
+                <figure><img data-zd-wipe-ref="cur" src="assets/images/zdelta/rt_7414_cur.jpg" alt="Current O_t"><figcaption>Current O<sub>t</sub> (input)</figcaption></figure>
+                <figure><img data-zd-wipe-ref="fut" src="assets/images/zdelta/rt_7414_fut.jpg" alt="Future O_t+H"><figcaption>Future O<sub>t+H</sub> (unseen)</figcaption></figure>
+              </div>
+            </div>
+          </div>
+
+          <div class="zdelta-footer">
+            <p class="zdelta-desc" data-zd-desc>Left AGILEX arm lifts the green bottle on a randomized cluttered tabletop. With zero future frames supplied, F<sup>2</sup> recovers the teacher VGGT feature delta across the moving arm and bottle while suppressing static distractors.</p>
+            <div class="zdelta-metrics" data-zd-metrics aria-label="Measured alignment metrics">
+              <span><b>r = 0.901</b> Norm Pearson</span>
+              <span><b>0.686</b> Top-25% Cos</span>
+              <span><b>0.625</b> Top-20% IoU</span>
+              <span class="badge-zero">O<sub>t</sub> only · no future frame</span>
+            </div>
+          </div>
+        </div>
+
         <div class="evidence-stack">
           <figure class="evidence-figure">
             <div class="evidence-copy">
               <div>
-                <span class="evidence-index">A</span>
-                <h3>Feature-change readout</h3>
-              </div>
-              <p>Predicted response maps recover the same task-relevant regions as the aligned VGGT target, including the moving arm and interaction geometry.</p>
-            </div>
-            <div class="evidence-image-viewport">
-              <div class="evidence-image-toolbar"><span>VGGT target → <em>Z<sub>Δ</sub> prediction</em></span><button class="icon-button" type="button" data-expand-image="assets/images/feature-readout.svg" aria-label="Expand feature-change readout" title="Expand readout">↗</button></div>
-              <img src="assets/images/feature-readout.svg" alt="VGGT transition targets compared with transition-query predictions for mug transfer and drawer opening" width="485" height="104" loading="lazy">
-            </div>
-          </figure>
-
-          <figure class="evidence-figure">
-            <div class="evidence-copy">
-              <div>
-                <span class="evidence-index">B</span>
+                <span class="evidence-index">Probe</span>
                 <h3>Future-point readout</h3>
               </div>
               <p>A probe trained on frozen queries predicts future image-space displacement near the observed future, while ImageWAM provides a weaker spatial readout.</p>
@@ -357,6 +414,7 @@
               <div class="video-stage-meta">
                 <span class="video-task-pill" data-video-title>Cup stacking</span>
                 <span class="video-score-pill" data-video-score>F² 93% · ImageWAM 67% · π₀.₅ 73%</span>
+                <span class="video-speed-tag" data-video-rate-tag>4× real-time · full rollout</span>
               </div>
               <div class="video-speed-controls" aria-label="Playback speed">
                 <button class="speed-btn is-active" type="button" data-video-speed="1">1×</button>

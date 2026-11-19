@@ -2046,6 +2046,16 @@ body.intro-open { overflow: hidden; }
   font-weight: 600;
 }
 
+.video-speed-tag {
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(116, 196, 255, 0.14);
+  border: 1px solid rgba(116, 196, 255, 0.35);
+  color: #a9d9ff;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
 .video-speed-controls {
   display: inline-flex;
   gap: 4px;
@@ -2346,5 +2356,348 @@ body.intro-open { overflow: hidden; }
   .real-table-header {
     flex-direction: column;
     align-items: flex-start;
+  }
+}
+
+
+/* ==========================================================================
+   Real Model Z_delta vs VGGT Teacher Interactive Explorer (#evidence)
+   ========================================================================== */
+.zdelta-explorer {
+  margin: 42px 0 64px;
+  border: 1px solid rgba(154, 178, 214, 0.22);
+  border-radius: 14px;
+  background: rgba(11, 18, 32, 0.92);
+  box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+  overflow: hidden;
+}
+
+.zdelta-topbar {
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(18, 27, 45, 0.9);
+  flex-wrap: wrap;
+}
+
+.zdelta-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zdelta-tab {
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.03);
+  color: #aebcd0;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color 160ms ease, background 160ms ease, color 160ms ease;
+}
+
+.zdelta-tab strong {
+  display: block;
+  font-size: 12.5px;
+  font-weight: 700;
+  color: inherit;
+  line-height: 1.2;
+}
+
+.zdelta-tab span {
+  display: block;
+  margin-top: 2px;
+  font-size: 11px;
+  color: #77879e;
+}
+
+.zdelta-tab:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+
+.zdelta-tab.is-active {
+  border-color: rgba(176, 134, 255, 0.72);
+  background: rgba(125, 68, 214, 0.22);
+  color: #fff;
+}
+
+.zdelta-tab.is-active span {
+  color: #d6c1ff;
+}
+
+.zdelta-mode-switch {
+  display: inline-flex;
+  padding: 3px;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.zdelta-mode-btn {
+  padding: 6px 12px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: #9baac0;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.zdelta-mode-btn.is-active {
+  background: #ffffff;
+  color: #101828;
+}
+
+.zdelta-body {
+  padding: 18px;
+}
+
+.zdelta-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.zdelta-grid[hidden],
+.zdelta-wipe-panel[hidden] {
+  display: none;
+}
+
+.zdelta-card {
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  overflow: hidden;
+  background: #080d17;
+}
+
+.zdelta-card.is-student {
+  border-color: rgba(180, 132, 255, 0.68);
+  box-shadow: 0 0 0 1px rgba(180, 132, 255, 0.28), 0 12px 30px rgba(112, 66, 181, 0.24);
+}
+
+.zdelta-card-head {
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(20, 30, 48, 0.85);
+}
+
+.zdelta-card-head span {
+  color: #e9f0fa;
+  font-size: 11.5px;
+  font-weight: 700;
+}
+
+.zdelta-card.is-student .zdelta-card-head span {
+  color: #dec8ff;
+}
+
+.zdelta-card-head small {
+  color: #8494aa;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.zdelta-card img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+/* Interactive Wipe Slider */
+.zdelta-wipe-panel {
+  display: grid;
+  grid-template-columns: minmax(0, 1.45fr) minmax(200px, 0.55fr);
+  gap: 18px;
+  align-items: center;
+}
+
+.zdelta-wipe-stage {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  max-height: 460px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(180, 132, 255, 0.5);
+  background: #080d17;
+  user-select: none;
+}
+
+.zdelta-wipe-stage .wipe-base,
+.zdelta-wipe-stage .wipe-top {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  pointer-events: none;
+}
+
+.zdelta-wipe-stage .wipe-clip {
+  position: absolute;
+  inset: 0;
+  clip-path: inset(0 calc(100% - var(--wipe, 50%)) 0 0);
+  pointer-events: none;
+}
+
+.wipe-label {
+  position: absolute;
+  top: 12px;
+  z-index: 3;
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(10, 16, 27, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  color: #eef4fc;
+  font-size: 11px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.wipe-left { left: 12px; }
+.wipe-right { right: 12px; border-color: rgba(180, 132, 255, 0.6); color: #e2d0ff; }
+
+.wipe-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--wipe, 50%);
+  width: 2px;
+  background: #ffffff;
+  box-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.wipe-divider span {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: #ffffff;
+  color: #101828;
+  font-size: 14px;
+  font-weight: 700;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.45);
+  transform: translate(-50%, -50%);
+}
+
+.wipe-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+  z-index: 5;
+}
+
+.zdelta-wipe-refs {
+  display: grid;
+  gap: 12px;
+}
+
+.zdelta-wipe-refs figure {
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #080d17;
+}
+
+.zdelta-wipe-refs img {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  display: block;
+}
+
+.zdelta-wipe-refs figcaption {
+  padding: 6px 10px;
+  color: #a6b6cc;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.zdelta-footer {
+  padding: 14px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(15, 23, 39, 0.86);
+  flex-wrap: wrap;
+}
+
+.zdelta-desc {
+  margin: 0;
+  max-width: 640px;
+  color: #b7c5d8;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.zdelta-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.zdelta-metrics span {
+  padding: 5px 10px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #9fb0c7;
+  font-size: 11.5px;
+}
+
+.zdelta-metrics span b {
+  color: #ffffff;
+  margin-right: 4px;
+}
+
+.zdelta-metrics .badge-zero {
+  background: rgba(104, 207, 145, 0.14);
+  border-color: rgba(104, 207, 145, 0.45);
+  color: #8ce5ae;
+  font-weight: 600;
+}
+
+@media (max-width: 980px) {
+  .zdelta-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .zdelta-wipe-panel {
+    grid-template-columns: 1fr;
+  }
+  .zdelta-wipe-refs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .zdelta-grid {
+    grid-template-columns: 1fr;
   }
 }
