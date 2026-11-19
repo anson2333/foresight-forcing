@@ -1,27 +1,54 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
-  <title id="title">Foresight Forcing F squared mark</title>
-  <desc id="desc">A pixel-grid letter F transitioning from cyan to violet with a superscript two.</desc>
-  <rect x="1" y="1" width="62" height="62" rx="12" fill="#111827" stroke="#334155" stroke-width="2"/>
-
-  <g transform="translate(10 10)">
-    <rect x="0" y="0" width="7" height="7" rx="1.5" fill="#21B3E8"/>
-    <rect x="9" y="0" width="7" height="7" rx="1.5" fill="#2E91DD"/>
-    <rect x="18" y="0" width="7" height="7" rx="1.5" fill="#4F6BD2"/>
-    <rect x="27" y="0" width="7" height="7" rx="1.5" fill="#7446C8"/>
-
-    <rect x="0" y="9" width="7" height="7" rx="1.5" fill="#28A8E4"/>
-    <rect x="9" y="9" width="7" height="7" rx="1.5" fill="#4974D4" opacity=".82"/>
-
-    <rect x="0" y="18" width="7" height="7" rx="1.5" fill="#328FDA"/>
-    <rect x="9" y="18" width="7" height="7" rx="1.5" fill="#5267D1"/>
-    <rect x="18" y="18" width="7" height="7" rx="1.5" fill="#7049CA"/>
-
-    <rect x="0" y="27" width="7" height="7" rx="1.5" fill="#4078D5"/>
-    <rect x="9" y="27" width="7" height="7" rx="1.5" fill="#6555CD" opacity=".74"/>
-
-    <rect x="0" y="36" width="7" height="7" rx="1.5" fill="#5264D0"/>
-  </g>
-
-  <path d="M43 30.5c0-4.7 2.9-7.5 7.4-7.5 4.2 0 7 2.4 7 6 0 2.8-1.6 4.8-4.8 7.1l-3 2.1h8.2v4.8H42.9v-3.8l6.4-5c2.1-1.7 3-2.8 3-4.2 0-1.3-.8-2.2-2.1-2.2-1.6 0-2.4 1-2.5 3.2l-4.7-.5z" fill="#F8FAFC" transform="translate(17 -7) scale(.68)"/>
-  <circle cx="54" cy="50" r="2.5" fill="#D75B44"/>
+  <title id="title">Foresight Forcing logo</title>
+  <desc id="desc">Slanted dot-to-square gradient F mark extracted from the Foresight Forcing teaser.</desc>
+  <circle cx="15.31" cy="7.87" r="2.06" fill="#19B6EA"/>
+  <rect x="19.15" y="5.68" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="25.05" y="5.54" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="30.94" y="5.41" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="14.15" cy="13.90" r="2.06" fill="#19B6EA"/>
+  <rect x="17.99" y="11.71" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="23.89" y="11.57" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="29.79" y="11.44" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="13.00" cy="19.94" r="2.06" fill="#19B6EA"/>
+  <rect x="16.84" y="17.74" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="22.73" y="17.61" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="28.63" y="17.47" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="11.84" cy="25.97" r="2.06" fill="#19B6EA"/>
+  <rect x="15.68" y="23.77" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="21.58" y="23.64" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="27.48" y="23.50" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="10.69" cy="32.00" r="2.06" fill="#19B6EA"/>
+  <rect x="14.52" y="29.81" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="20.42" y="29.67" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="26.32" y="29.54" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="9.53" cy="38.03" r="2.06" fill="#19B6EA"/>
+  <rect x="13.37" y="35.84" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="19.26" y="35.70" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="25.16" y="35.57" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="8.37" cy="44.06" r="2.06" fill="#19B6EA"/>
+  <rect x="12.21" y="41.87" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="18.11" y="41.74" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="24.01" y="41.60" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="7.22" cy="50.10" r="2.06" fill="#19B6EA"/>
+  <rect x="11.05" y="47.90" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="16.95" y="47.77" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="22.85" y="47.63" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <circle cx="6.06" cy="56.13" r="2.06" fill="#19B6EA"/>
+  <rect x="9.90" y="53.93" width="4.39" height="4.39" rx="1.42" fill="#3E87DF"/>
+  <rect x="15.80" y="53.80" width="4.66" height="4.66" rx="0.79" fill="#6257D5"/>
+  <rect x="21.69" y="53.67" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="36.98" y="5.41" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="43.01" y="5.41" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="49.04" y="5.41" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="55.07" y="5.41" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="35.82" y="11.44" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="41.85" y="11.44" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="47.89" y="11.44" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="53.92" y="11.44" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="32.35" y="29.54" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="38.38" y="29.54" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="44.42" y="29.54" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="31.20" y="35.57" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="37.23" y="35.57" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
+  <rect x="43.26" y="35.57" width="4.93" height="4.93" rx="0.15" fill="#8728CA"/>
 </svg>
