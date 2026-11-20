@@ -12,7 +12,7 @@
       short: '2D Observation',
       badge: 'STAGE 01 · CURRENT OBSERVATION O<sub>t</sub>',
       title: 'Start from a standard 2D RGB observation O<sub>t</sub>',
-      detail: 'Real RoboTwin scene with cluttered tabletop props (soy sauce bottle, plate, scale, blocks) and an AGILEX arm.'
+      detail: 'Real RoboTwin scene (Rank the blocks) with cluttered distractors (soy-sauce bottle, plate, scale, blocks) and an AGILEX arm grasping the cyan block.'
     },
     {
       id: 1,
@@ -28,7 +28,7 @@
       short: 'VGGT Feature Δ',
       badge: 'STAGE 03 · MEASURED VGGT FEATURE CHANGE Y<sub>Δ</sub>',
       title: 'Isolate what changes in 3D feature space',
-      detail: 'As the arm moves from O<sub>t</sub> to O<sub>t+H</sub>, static clutter fades while measured VGGT feature delta ‖Y<sub>+</sub> − Y<sub>−</sub>‖<sub>2</sub> ignites on the moving arm.'
+      detail: 'As the arm carries the grasped block from O<sub>t</sub> to O<sub>t+H</sub>, static distractors fade while measured VGGT feature delta ‖Y<sub>+</sub> − Y<sub>−</sub>‖<sub>2</sub> ignites on both the arm and carried block.'
     },
     {
       id: 3,
@@ -36,8 +36,7 @@
       short: 'Spatial Queries Z_Δ',
       badge: 'STAGE 04 · DEPLOYMENT CONCEPT Z<sub>Δ</sub> → ACTION (SCHEMATIC)',
       title: 'Anticipate 3D motion from O<sub>t</sub> alone',
-      detail: 'Schematic: solid arm shows current input O<sub>t</sub>; the sparse cyan hologram marks anticipated pose O<sub>t+H</sub> bridged by Z<sub>Δ</sub> motion streamlines (teacher removed).',
-      hint: 'Drag to orbit 3D · Solid O<sub>t</sub> → sparse foresight ghost O<sub>t+H</sub> (schematic)'
+      detail: 'Schematic: solid arm & grasped block show current input O<sub>t</sub>; the sparse cyan hologram marks anticipated pose O<sub>t+H</sub> bridged by Z<sub>Δ</sub> motion streamlines (teacher removed).'
     }
   ];
 
@@ -804,42 +803,42 @@
       const deltaIn = smoothstep(0.415, 0.495, p);
       const deltaOut = smoothstep(0.605, 0.665, p);
       const deltaMix = deltaIn * (1.0 - deltaOut) * (1.0 - loopReset);
-      const scanX = lerp(-0.85, 1.25, smoothstep(0.405, 0.585, p));
+      const scanX = lerp(-0.85, 1.35, smoothstep(0.40, 0.515, p));
 
       // Spatial transition queries Z_delta + sparse target hologram in Stage 3 (full visibility ~6.0s -> 3 full pulse cycles)
       const queryMix = smoothstep(0.615, 0.66, p) * (1.0 - smoothstep(0.945, 0.99, p));
 
-      // Camera orbit keyframes (around camTarget)
-      // Base frontal camera matches original calibrated extrinsics: yaw=0, pitch=0.927 rad (53.1 deg), dist=1.14
+      // Camera orbit keyframes (auto-scaled for calibrated fovY so scene never clips top/bottom)
+      const fovScale = Math.min(1.42, Math.max(1.06, Math.tan((55 * Math.PI) / 360) / Math.tan(((this.meta?.fovY || 55) * Math.PI) / 360) * 1.06));
       const basePitch = 0.927;
       let yaw = lerp(-0.04, 0.04, smoothstep(0.0, 0.17, p));
       let pitch = basePitch;
-      let dist = 1.14;
+      let dist = 1.14 * fovScale;
 
       // Lift into sweeping 3/4 isometric perspective
       const t1 = smoothstep(0.16, 0.39, p);
-      yaw = lerp(yaw, 0.56, t1);
-      pitch = lerp(pitch, 0.56, t1);
-      dist = lerp(dist, 1.38, t1);
+      yaw = lerp(yaw, 0.52, t1);
+      pitch = lerp(pitch, 0.52, t1);
+      dist = lerp(dist, 1.44 * fovScale, t1);
 
-      // Orbit closer toward AGILEX arm during VGGT delta reveal
+      // Frame both moving arm and lifted object during VGGT delta reveal
       const t2 = smoothstep(0.39, 0.62, p);
-      yaw = lerp(yaw, 0.26, t2);
-      pitch = lerp(pitch, 0.62, t2);
-      dist = lerp(dist, 1.26, t2);
+      yaw = lerp(yaw, 0.24, t2);
+      pitch = lerp(pitch, 0.56, t2);
+      dist = lerp(dist, 1.38 * fovScale, t2);
 
-      // Side-3/4 angle in Stage 4 so the arm's forward O_t -> O_{t+H} displacement separates cleanly across screen
+      // Lower side-3/4 angle in Stage 4 so vertical upward lift O_t -> O_{t+H} separates cleanly across screen
       const t3 = smoothstep(0.62, 0.72, p);
       const t3Drift = smoothstep(0.72, 0.95, p);
-      yaw = lerp(yaw, 0.86, t3);
-      yaw = lerp(yaw, 0.74, t3Drift);
-      pitch = lerp(pitch, 0.40, t3);
-      dist = lerp(dist, 1.24, t3);
+      yaw = lerp(yaw, 0.78, t3);
+      yaw = lerp(yaw, 0.66, t3Drift);
+      pitch = lerp(pitch, 0.30, t3);
+      dist = lerp(dist, 1.36 * fovScale, t3);
 
       // Smooth return to frontal camera at loop boundary
       yaw = lerp(yaw, -0.04, loopReset);
       pitch = lerp(pitch, basePitch, loopReset);
-      dist = lerp(dist, 1.14, loopReset);
+      dist = lerp(dist, 1.14 * fovScale, loopReset);
 
       return { stageIdx, stageLocal, unproject, photoAlpha, frameAlpha, morph, deltaMix, scanX, queryMix, yaw, pitch, dist };
     }
@@ -852,7 +851,7 @@
         if (this.titleEl) this.titleEl.innerHTML = def.title;
         if (this.detailEl) this.detailEl.innerHTML = def.detail;
         if (this.hintEl) {
-          this.hintEl.innerHTML = def.hint || 'Drag to orbit 3D · 7,884 measured RoboTwin points';
+          this.hintEl.innerHTML = def.hint || 'Drag to orbit 3D · 8,552 measured RoboTwin points';
         }
         this.stageButtons.forEach((btn, i) => {
           const isCur = i === stageIdx;
@@ -874,11 +873,11 @@
       const pitch = Math.max(0.18, Math.min(1.38, state.pitch + this.userPitch));
       const dist = state.dist * this.userZoom;
 
-      // Subtle target shift toward moving arm during Stage 2 & 3
-      const focusWeight = Math.max(state.deltaMix, state.queryMix) * 0.16;
-      const tx = target[0] - focusWeight * 0.45;
-      const ty = target[1] + focusWeight * 0.25;
-      const tz = target[2] + focusWeight * 0.15;
+      // Subtle target shift toward moving arm & lifted object during Stage 2 & 3
+      const focusWeight = Math.max(state.deltaMix, state.queryMix) * 0.14;
+      const tx = target[0] - focusWeight * 0.35;
+      const ty = target[1] + 0.06 + focusWeight * 0.30;
+      const tz = target[2] + focusWeight * 0.10;
 
       const eye = [
         tx + dist * Math.cos(pitch) * Math.sin(yaw),
@@ -940,7 +939,7 @@
         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
         gl.uniform1f(this.uP.ghostPass, 1.0);
         gl.uniform1f(this.uP.ghostT, 1.0);
-        gl.uniform1f(this.uP.ghostAlpha, state.queryMix * 0.44);
+        gl.uniform1f(this.uP.ghostAlpha, state.queryMix * 0.62);
         gl.drawArrays(gl.POINTS, 0, this.pointCount);
         gl.depthMask(true);
       }
