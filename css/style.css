@@ -704,7 +704,7 @@ body.intro-open { overflow: hidden; }
 .hero {
   position: relative;
   min-height: 88svh;
-  overflow: hidden;
+  overflow: clip;
   color: var(--white);
   background: #111827;
   display: grid;
@@ -1662,12 +1662,17 @@ body.intro-open { overflow: hidden; }
 /* Interactive 3D Stage */
 .foresight-stage {
   width: 100%;
+  scroll-margin-top: 86px;
   border: 1px solid rgba(132, 184, 240, 0.24);
   border-radius: 16px;
   background: #0a101b;
   box-shadow: 0 32px 96px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   overflow: hidden;
   text-align: left;
+}
+
+.section[id] {
+  scroll-margin-top: 72px;
 }
 
 .stage-topbar {

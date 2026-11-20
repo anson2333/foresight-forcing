@@ -346,7 +346,7 @@ const realVideoTasks = {
   cup_stacking: {
     title: 'Cup stacking',
     score: 'F² 93% · ImageWAM 67% · π₀.₅ 73%',
-    rate: '4× real-time · full rollout',
+    rate: '6× real-time · full rollout',
     desc: 'Bimanual pyramid cup stacking requiring precise vertical alignment and contact-rich placement (full-task completion).',
     src: 'assets/videos/cup_stacking.mp4',
     poster: 'assets/videos/cup_stacking.jpg'
@@ -354,7 +354,7 @@ const realVideoTasks = {
   towel_folding: {
     title: 'Towel folding',
     score: 'F² 100% · ImageWAM 87% · π₀.₅ 100%',
-    rate: '4× real-time · full rollout',
+    rate: '6× real-time · full rollout',
     desc: 'Coordinated bimanual folding of deformable cloth with continuous geometry changes across folding creases (full-task completion).',
     src: 'assets/videos/towel_folding.mp4',
     poster: 'assets/videos/towel_folding.jpg'
@@ -362,7 +362,7 @@ const realVideoTasks = {
   egg_transfer: {
     title: 'Egg transfer',
     score: 'F² 80% · ImageWAM 73% · π₀.₅ 80%',
-    rate: '4× real-time · full rollout',
+    rate: '6× real-time · full rollout',
     desc: 'Delicate picking and transfer of eggs into target slots without dropping or crushing (full-task completion).',
     src: 'assets/videos/egg_transfer.mp4',
     poster: 'assets/videos/egg_transfer.jpg'
@@ -370,7 +370,7 @@ const realVideoTasks = {
   breakfast_preparation: {
     title: 'Breakfast preparation',
     score: 'F² 80% · ImageWAM 73% · π₀.₅ 87%',
-    rate: '4× real-time · full rollout',
+    rate: '6× real-time · full rollout',
     desc: 'Long-horizon sequential food assembly across multiple objects and intermediate configurations (full-task completion).',
     src: 'assets/videos/breakfast_preparation.mp4',
     poster: 'assets/videos/breakfast_preparation.jpg'
@@ -378,7 +378,7 @@ const realVideoTasks = {
   tool_stowing: {
     title: 'Tool stowing*',
     score: 'F² 65.0% · ImageWAM 31.7% · π₀.₅ 63.3%',
-    rate: '4× real-time · full rollout',
+    rate: '6× real-time · full rollout',
     desc: 'Sequential placement of four articulated tools into fitted organizer slots (item-level score across 4 tools per trial).',
     src: 'assets/videos/tool_stowing.mp4',
     poster: 'assets/videos/tool_stowing.jpg'
@@ -386,7 +386,7 @@ const realVideoTasks = {
   size_sorting: {
     title: 'Size sorting*',
     score: 'F² 96.2% · ImageWAM 89.3% · π₀.₅ 97.7%',
-    rate: '4× real-time · full rollout',
+    rate: '6× real-time · full rollout',
     desc: 'Continuous sorting of 15 blocks by physical size into designated bins (item-level score across 15 blocks per trial).',
     src: 'assets/videos/size_sorting.mp4',
     poster: 'assets/videos/size_sorting.jpg'
@@ -401,8 +401,6 @@ if (galleryRoot) {
   const rateEl = galleryRoot.querySelector('[data-video-rate-tag]');
   const descEl = galleryRoot.querySelector('[data-video-desc]');
   const cards = galleryRoot.querySelectorAll('[data-video-task]');
-  const speedBtns = galleryRoot.querySelectorAll('[data-video-speed]');
-  let currentSpeed = 1;
 
   function selectVideoTask(key, autoplay = true) {
     const item = realVideoTasks[key];
@@ -418,7 +416,6 @@ if (galleryRoot) {
     if (descEl) descEl.textContent = item.desc;
     videoEl.poster = item.poster;
     videoEl.src = item.src;
-    videoEl.playbackRate = currentSpeed;
     videoEl.load();
     if (autoplay) {
       videoEl.play().catch(() => {});
@@ -429,20 +426,11 @@ if (galleryRoot) {
     card.addEventListener('click', () => selectVideoTask(card.dataset.videoTask, true));
   });
 
-  speedBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      currentSpeed = Number(btn.dataset.videoSpeed) || 1;
-      speedBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
-      if (videoEl) videoEl.playbackRate = currentSpeed;
-    });
-  });
-
   // Auto-play featured rollout when scrolled into view, pause when scrolled away
   if ('IntersectionObserver' in window && videoEl) {
     const vidObserver = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
         if (entry.isIntersecting) {
-          videoEl.playbackRate = currentSpeed;
           videoEl.play().catch(() => {});
         } else {
           videoEl.pause();
