@@ -43,9 +43,9 @@
       <div class="nav-links" id="nav-links" data-nav-links>
         <a href="#foresight-stage">3D Demo</a>
         <a href="#insight">Insight</a>
+        <a href="#real-world">Real world</a>
         <a href="#method">Method</a>
         <a href="#results">Results</a>
-        <a href="#real-world">Real world</a>
         <a href="#citation">Citation</a>
       </div>
     </nav>
@@ -159,9 +159,9 @@
 
         <div class="hero-metrics" aria-label="Headline results">
           <div><strong>95.01%</strong><span>RoboTwin 2.0 Full</span></div>
+          <div><strong>77.45%</strong><span>RoboTwin 2.0 C2R</span></div>
           <div><strong>84.5%</strong><span>LIBERO-Plus</span></div>
           <div><strong>85.8%</strong><span>Real-world mean</span></div>
-          <div><strong>+4.1%</strong><span>Eager latency</span></div>
         </div>
       </div>
     </section>
@@ -200,11 +200,186 @@
         </div>
 
         <figure class="wide-figure teaser-figure figure-breakout figure-breakout-wide">
-          <div class="figure-toolbar">
-            <button class="icon-button" type="button" data-expand-image="assets/images/teaser.svg" aria-label="Expand project overview" title="Expand project overview">↗</button>
-          </div>
           <img src="assets/images/teaser.svg" alt="Overview of Foresight Forcing, including transition supervision, policy inference, benchmarks, and real-world tasks" width="1420" height="632" loading="eager">
         </figure>
+      </div>
+    </section>
+
+    <section class="section real-section" id="real-world">
+      <div class="section-inner">
+        <div class="real-header">
+          <div class="section-heading">
+            <p class="section-kicker">Physical manipulation</p>
+            <h2>Six tasks, one jointly trained policy.</h2>
+            <p>Foresight Forcing is evaluated over 15 trials per task on long-horizon bimanual manipulation spanning rigid objects, articulated tools, deformable cloth, and sequential placement.</p>
+          </div>
+          <div class="real-score">
+            <strong>85.8%</strong>
+            <span>mean score (vs. 83.5% π<sub>0.5</sub> · 70.2% ImageWAM)</span>
+          </div>
+        </div>
+
+        <div class="real-video-showcase" data-video-gallery>
+          <div class="real-video-featured">
+            <div class="video-stage-bar">
+              <div class="video-stage-meta">
+                <span class="video-task-pill" data-video-title>Cup stacking</span>
+                <span class="video-score-pill" data-video-score>F² 93% · ImageWAM 67% · π₀.₅ 73%</span>
+                <span class="video-speed-tag" data-video-rate-tag>2× real-time · full rollout</span>
+              </div>
+            </div>
+            <div class="video-frame">
+              <video data-featured-video src="assets/videos/cup_stacking.mp4" poster="assets/videos/cup_stacking.jpg" controls muted loop playsinline preload="metadata"></video>
+            </div>
+          </div>
+
+          <div class="real-video-grid" role="tablist" aria-label="Select real-world rollout video">
+            <button class="video-card is-active" type="button" role="tab" aria-selected="true" data-video-task="cup_stacking">
+              <div class="video-card-thumb">
+                <img src="assets/videos/cup_stacking.jpg" alt="Cup stacking rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Cup stacking</strong>
+                <span><b>93%</b> · +26 vs ImageWAM</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="towel_folding">
+              <div class="video-card-thumb">
+                <img src="assets/videos/towel_folding.jpg" alt="Towel folding rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Towel folding</strong>
+                <span><b>100%</b> · Deformable cloth</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="egg_transfer">
+              <div class="video-card-thumb">
+                <img src="assets/videos/egg_transfer.jpg" alt="Egg transfer rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Egg transfer</strong>
+                <span><b>80%</b> · Delicate grasping</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="breakfast_preparation">
+              <div class="video-card-thumb">
+                <img src="assets/videos/breakfast_preparation.jpg" alt="Breakfast preparation rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Breakfast prep</strong>
+                <span><b>80%</b> · Multi-step sequence</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="tool_stowing">
+              <div class="video-card-thumb">
+                <img src="assets/videos/tool_stowing.jpg" alt="Tool stowing rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Tool stowing<sup>*</sup></strong>
+                <span><b>65.0%</b> · +33.3 vs ImageWAM</span>
+              </div>
+            </button>
+            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="size_sorting">
+              <div class="video-card-thumb">
+                <img src="assets/videos/size_sorting.jpg" alt="Size sorting rollout" width="320" height="180" loading="lazy">
+                <span class="video-play-badge" aria-hidden="true">▶</span>
+              </div>
+              <div class="video-card-info">
+                <strong>Size sorting<sup>*</sup></strong>
+                <span><b>96.2%</b> · 15-block ordering</span>
+              </div>
+            </button>
+          </div>
+        </div>
+
+        <div class="real-table-wrap">
+          <div class="real-table-header">
+            <div>
+              <p class="section-kicker">Quantitative breakdown</p>
+              <h3>Real-world task scores (15 trials per task)</h3>
+            </div>
+          </div>
+          <div class="real-table-scroll">
+            <table class="real-table">
+              <thead>
+                <tr>
+                  <th scope="col">Task</th>
+                  <th scope="col">Metric</th>
+                  <th scope="col">π<sub>0.5</sub> (Pretrained)</th>
+                  <th scope="col">ImageWAM</th>
+                  <th scope="col" class="is-ours">F<sup>2</sup> (Ours)</th>
+                  <th scope="col">Δ vs ImageWAM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cup stacking</td>
+                  <td class="col-muted">Full completion</td>
+                  <td>73.0%</td>
+                  <td>67.0%</td>
+                  <td class="is-ours"><strong>93.0%</strong></td>
+                  <td class="col-gain">+26.0%</td>
+                </tr>
+                <tr>
+                  <td>Towel folding</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>100.0%</strong></td>
+                  <td>87.0%</td>
+                  <td class="is-ours"><strong>100.0%</strong></td>
+                  <td class="col-gain">+13.0%</td>
+                </tr>
+                <tr>
+                  <td>Egg transfer</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>80.0%</strong></td>
+                  <td>73.0%</td>
+                  <td class="is-ours"><strong>80.0%</strong></td>
+                  <td class="col-gain">+7.0%</td>
+                </tr>
+                <tr>
+                  <td>Breakfast preparation</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>87.0%</strong></td>
+                  <td>73.0%</td>
+                  <td class="is-ours">80.0%</td>
+                  <td class="col-gain">+7.0%</td>
+                </tr>
+                <tr>
+                  <td>Tool stowing<sup>*</sup></td>
+                  <td class="col-muted">Item-level (4 tools)</td>
+                  <td>63.3%</td>
+                  <td>31.7%</td>
+                  <td class="is-ours"><strong>65.0%</strong></td>
+                  <td class="col-gain">+33.3%</td>
+                </tr>
+                <tr>
+                  <td>Size sorting<sup>*</sup></td>
+                  <td class="col-muted">Item-level (15 blocks)</td>
+                  <td><strong>97.7%</strong></td>
+                  <td>89.3%</td>
+                  <td class="is-ours">96.2%</td>
+                  <td class="col-gain">+6.9%</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Unweighted mean</strong></td>
+                  <td class="col-muted">6 tasks</td>
+                  <td>83.5%</td>
+                  <td>70.2%</td>
+                  <td class="is-ours"><strong>85.8%</strong></td>
+                  <td class="col-gain"><strong>+15.6%</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p class="real-table-note"><sup>*</sup> Item-level evaluation.</p>
+        </div>
       </div>
     </section>
 
@@ -235,9 +410,6 @@
         </div>
 
         <figure class="wide-figure method-figure figure-breakout">
-          <div class="figure-toolbar">
-            <button class="icon-button" type="button" data-expand-image="assets/images/method-overview.svg" aria-label="Expand architecture figure" title="Expand figure">↗</button>
-          </div>
           <img src="assets/images/method-overview.svg" alt="Foresight Forcing architecture with FLUX.2 backbone, shared query updater, Action Expert, and VGGT geometry supervision" width="1103" height="586" loading="lazy">
         </figure>
       </div>
@@ -408,203 +580,6 @@
             </div>
             <div class="bar-chart" data-result-chart aria-label="Benchmark comparison bar chart"></div>
           </div>
-        </div>
-
-        <div class="ablation-band" data-ablation-explorer>
-          <div class="ablation-copy">
-            <p class="section-kicker">Controlled analysis · LIBERO-Plus</p>
-            <div class="ablation-tabs" role="tablist" aria-label="Ablation dimensions">
-              <button class="ablation-tab is-active" type="button" role="tab" aria-selected="true" data-ablation-tab="target">Supervision target</button>
-              <button class="ablation-tab" type="button" role="tab" aria-selected="false" data-ablation-tab="teacher">3D teacher</button>
-              <button class="ablation-tab" type="button" role="tab" aria-selected="false" data-ablation-tab="budget">Query budget</button>
-            </div>
-            <h3 data-ablation-title>Feature deltas outperform single-frame targets.</h3>
-            <p data-ablation-desc>On LIBERO-Plus, delta supervision reaches 84.5%, compared with 83.2% for current features, 81.2% for future features, and 82.3% without distillation.</p>
-          </div>
-          <div class="ablation-bars" data-ablation-bars aria-label="Controlled ablation bars">
-            <div><span>F<sup>2</sup> · delta</span><i style="--value: 84.5%"></i><b>84.5</b></div>
-            <div><span>Current</span><i style="--value: 83.2%"></i><b>83.2</b></div>
-            <div><span>No distill.</span><i style="--value: 82.3%"></i><b>82.3</b></div>
-            <div><span>Future</span><i style="--value: 81.2%"></i><b>81.2</b></div>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="section real-section" id="real-world">
-      <div class="section-inner">
-        <div class="real-header">
-          <div class="section-heading">
-            <p class="section-kicker">Physical manipulation</p>
-            <h2>Six tasks, one jointly trained policy.</h2>
-            <p>Foresight Forcing is evaluated over 15 trials per task on long-horizon bimanual manipulation spanning rigid objects, articulated tools, deformable cloth, and sequential placement.</p>
-          </div>
-          <div class="real-score">
-            <strong>85.8%</strong>
-            <span>mean score (vs. 83.5% π<sub>0.5</sub> · 70.2% ImageWAM)</span>
-          </div>
-        </div>
-
-        <div class="real-video-showcase" data-video-gallery>
-          <div class="real-video-featured">
-            <div class="video-stage-bar">
-              <div class="video-stage-meta">
-                <span class="video-task-pill" data-video-title>Cup stacking</span>
-                <span class="video-score-pill" data-video-score>F² 93% · ImageWAM 67% · π₀.₅ 73%</span>
-                <span class="video-speed-tag" data-video-rate-tag>1.5× real-time · full rollout</span>
-              </div>
-            </div>
-            <div class="video-frame">
-              <video data-featured-video src="assets/videos/cup_stacking.mp4" poster="assets/videos/cup_stacking.jpg" controls muted loop playsinline preload="metadata"></video>
-            </div>
-          </div>
-
-          <div class="real-video-grid" role="tablist" aria-label="Select real-world rollout video">
-            <button class="video-card is-active" type="button" role="tab" aria-selected="true" data-video-task="cup_stacking">
-              <div class="video-card-thumb">
-                <img src="assets/videos/cup_stacking.jpg" alt="Cup stacking rollout" width="320" height="180" loading="lazy">
-                <span class="video-play-badge" aria-hidden="true">▶</span>
-              </div>
-              <div class="video-card-info">
-                <strong>Cup stacking</strong>
-                <span><b>93%</b> · +26 vs ImageWAM</span>
-              </div>
-            </button>
-            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="towel_folding">
-              <div class="video-card-thumb">
-                <img src="assets/videos/towel_folding.jpg" alt="Towel folding rollout" width="320" height="180" loading="lazy">
-                <span class="video-play-badge" aria-hidden="true">▶</span>
-              </div>
-              <div class="video-card-info">
-                <strong>Towel folding</strong>
-                <span><b>100%</b> · Deformable cloth</span>
-              </div>
-            </button>
-            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="egg_transfer">
-              <div class="video-card-thumb">
-                <img src="assets/videos/egg_transfer.jpg" alt="Egg transfer rollout" width="320" height="180" loading="lazy">
-                <span class="video-play-badge" aria-hidden="true">▶</span>
-              </div>
-              <div class="video-card-info">
-                <strong>Egg transfer</strong>
-                <span><b>80%</b> · Delicate grasping</span>
-              </div>
-            </button>
-            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="breakfast_preparation">
-              <div class="video-card-thumb">
-                <img src="assets/videos/breakfast_preparation.jpg" alt="Breakfast preparation rollout" width="320" height="180" loading="lazy">
-                <span class="video-play-badge" aria-hidden="true">▶</span>
-              </div>
-              <div class="video-card-info">
-                <strong>Breakfast prep</strong>
-                <span><b>80%</b> · Multi-step sequence</span>
-              </div>
-            </button>
-            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="tool_stowing">
-              <div class="video-card-thumb">
-                <img src="assets/videos/tool_stowing.jpg" alt="Tool stowing rollout" width="320" height="180" loading="lazy">
-                <span class="video-play-badge" aria-hidden="true">▶</span>
-              </div>
-              <div class="video-card-info">
-                <strong>Tool stowing<sup>*</sup></strong>
-                <span><b>65.0%</b> · +33.3 vs ImageWAM</span>
-              </div>
-            </button>
-            <button class="video-card" type="button" role="tab" aria-selected="false" data-video-task="size_sorting">
-              <div class="video-card-thumb">
-                <img src="assets/videos/size_sorting.jpg" alt="Size sorting rollout" width="320" height="180" loading="lazy">
-                <span class="video-play-badge" aria-hidden="true">▶</span>
-              </div>
-              <div class="video-card-info">
-                <strong>Size sorting<sup>*</sup></strong>
-                <span><b>96.2%</b> · 15-block ordering</span>
-              </div>
-            </button>
-          </div>
-        </div>
-
-        <div class="real-table-wrap">
-          <div class="real-table-header">
-            <div>
-              <p class="section-kicker">Quantitative breakdown</p>
-              <h3>Real-world task scores (15 trials per task)</h3>
-            </div>
-          </div>
-          <div class="real-table-scroll">
-            <table class="real-table">
-              <thead>
-                <tr>
-                  <th scope="col">Task</th>
-                  <th scope="col">Metric</th>
-                  <th scope="col">π<sub>0.5</sub> (Pretrained)</th>
-                  <th scope="col">ImageWAM</th>
-                  <th scope="col" class="is-ours">F<sup>2</sup> (Ours)</th>
-                  <th scope="col">Δ vs ImageWAM</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Cup stacking</td>
-                  <td class="col-muted">Full completion</td>
-                  <td>73.0%</td>
-                  <td>67.0%</td>
-                  <td class="is-ours"><strong>93.0%</strong></td>
-                  <td class="col-gain">+26.0%</td>
-                </tr>
-                <tr>
-                  <td>Towel folding</td>
-                  <td class="col-muted">Full completion</td>
-                  <td><strong>100.0%</strong></td>
-                  <td>87.0%</td>
-                  <td class="is-ours"><strong>100.0%</strong></td>
-                  <td class="col-gain">+13.0%</td>
-                </tr>
-                <tr>
-                  <td>Egg transfer</td>
-                  <td class="col-muted">Full completion</td>
-                  <td><strong>80.0%</strong></td>
-                  <td>73.0%</td>
-                  <td class="is-ours"><strong>80.0%</strong></td>
-                  <td class="col-gain">+7.0%</td>
-                </tr>
-                <tr>
-                  <td>Breakfast preparation</td>
-                  <td class="col-muted">Full completion</td>
-                  <td><strong>87.0%</strong></td>
-                  <td>73.0%</td>
-                  <td class="is-ours">80.0%</td>
-                  <td class="col-gain">+7.0%</td>
-                </tr>
-                <tr>
-                  <td>Tool stowing<sup>*</sup></td>
-                  <td class="col-muted">Item-level (4 tools)</td>
-                  <td>63.3%</td>
-                  <td>31.7%</td>
-                  <td class="is-ours"><strong>65.0%</strong></td>
-                  <td class="col-gain">+33.3%</td>
-                </tr>
-                <tr>
-                  <td>Size sorting<sup>*</sup></td>
-                  <td class="col-muted">Item-level (15 blocks)</td>
-                  <td><strong>97.7%</strong></td>
-                  <td>89.3%</td>
-                  <td class="is-ours">96.2%</td>
-                  <td class="col-gain">+6.9%</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td><strong>Unweighted mean</strong></td>
-                  <td class="col-muted">6 tasks</td>
-                  <td>83.5%</td>
-                  <td>70.2%</td>
-                  <td class="is-ours"><strong>85.8%</strong></td>
-                  <td class="col-gain"><strong>+15.6%</strong></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <p class="real-table-note"><sup>*</sup> Item-level evaluation.</p>
         </div>
       </div>
     </section>
