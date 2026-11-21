@@ -296,90 +296,6 @@
             </button>
           </div>
         </div>
-
-        <div class="real-table-wrap">
-          <div class="real-table-header">
-            <div>
-              <p class="section-kicker">Quantitative breakdown</p>
-              <h3>Real-world task scores (15 trials per task)</h3>
-            </div>
-          </div>
-          <div class="real-table-scroll">
-            <table class="real-table">
-              <thead>
-                <tr>
-                  <th scope="col">Task</th>
-                  <th scope="col">Metric</th>
-                  <th scope="col">π<sub>0.5</sub> (Pretrained)</th>
-                  <th scope="col">ImageWAM</th>
-                  <th scope="col" class="is-ours">F<sup>2</sup> (Ours)</th>
-                  <th scope="col">Δ vs ImageWAM</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Cup stacking</td>
-                  <td class="col-muted">Full completion</td>
-                  <td>73.0%</td>
-                  <td>67.0%</td>
-                  <td class="is-ours"><strong>93.0%</strong></td>
-                  <td class="col-gain">+26.0%</td>
-                </tr>
-                <tr>
-                  <td>Towel folding</td>
-                  <td class="col-muted">Full completion</td>
-                  <td><strong>100.0%</strong></td>
-                  <td>87.0%</td>
-                  <td class="is-ours"><strong>100.0%</strong></td>
-                  <td class="col-gain">+13.0%</td>
-                </tr>
-                <tr>
-                  <td>Egg transfer</td>
-                  <td class="col-muted">Full completion</td>
-                  <td><strong>80.0%</strong></td>
-                  <td>73.0%</td>
-                  <td class="is-ours"><strong>80.0%</strong></td>
-                  <td class="col-gain">+7.0%</td>
-                </tr>
-                <tr>
-                  <td>Breakfast preparation</td>
-                  <td class="col-muted">Full completion</td>
-                  <td><strong>87.0%</strong></td>
-                  <td>73.0%</td>
-                  <td class="is-ours">80.0%</td>
-                  <td class="col-gain">+7.0%</td>
-                </tr>
-                <tr>
-                  <td>Tool stowing<sup>*</sup></td>
-                  <td class="col-muted">Item-level (4 tools)</td>
-                  <td>63.3%</td>
-                  <td>31.7%</td>
-                  <td class="is-ours"><strong>65.0%</strong></td>
-                  <td class="col-gain">+33.3%</td>
-                </tr>
-                <tr>
-                  <td>Size sorting<sup>*</sup></td>
-                  <td class="col-muted">Item-level (15 blocks)</td>
-                  <td><strong>97.7%</strong></td>
-                  <td>89.3%</td>
-                  <td class="is-ours">96.2%</td>
-                  <td class="col-gain">+6.9%</td>
-                </tr>
-              </tbody>
-              <tfoot>
-                <tr>
-                  <td><strong>Unweighted mean</strong></td>
-                  <td class="col-muted">6 tasks</td>
-                  <td>83.5%</td>
-                  <td>70.2%</td>
-                  <td class="is-ours"><strong>85.8%</strong></td>
-                  <td class="col-gain"><strong>+15.6%</strong></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-          <p class="real-table-note"><sup>*</sup> Item-level evaluation.</p>
-        </div>
       </div>
     </section>
 
@@ -580,6 +496,90 @@
             </div>
             <div class="bar-chart" data-result-chart aria-label="Benchmark comparison bar chart"></div>
           </div>
+        </div>
+
+        <div class="real-table-wrap">
+          <div class="real-table-header">
+            <div>
+              <p class="section-kicker">Real-world quantitative breakdown</p>
+              <h3>Real-world task scores (15 trials per task)</h3>
+            </div>
+          </div>
+          <div class="real-table-scroll">
+            <table class="real-table">
+              <thead>
+                <tr>
+                  <th scope="col">Task</th>
+                  <th scope="col">Metric</th>
+                  <th scope="col">π<sub>0.5</sub> (Pretrained)</th>
+                  <th scope="col">ImageWAM</th>
+                  <th scope="col" class="is-ours">F<sup>2</sup> (Ours)</th>
+                  <th scope="col">Δ vs ImageWAM</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Cup stacking</td>
+                  <td class="col-muted">Full completion</td>
+                  <td>73.0%</td>
+                  <td>67.0%</td>
+                  <td class="is-ours"><strong>93.0%</strong></td>
+                  <td class="col-gain">+26.0%</td>
+                </tr>
+                <tr>
+                  <td>Towel folding</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>100.0%</strong></td>
+                  <td>87.0%</td>
+                  <td class="is-ours"><strong>100.0%</strong></td>
+                  <td class="col-gain">+13.0%</td>
+                </tr>
+                <tr>
+                  <td>Egg transfer</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>80.0%</strong></td>
+                  <td>73.0%</td>
+                  <td class="is-ours"><strong>80.0%</strong></td>
+                  <td class="col-gain">+7.0%</td>
+                </tr>
+                <tr>
+                  <td>Breakfast preparation</td>
+                  <td class="col-muted">Full completion</td>
+                  <td><strong>87.0%</strong></td>
+                  <td>73.0%</td>
+                  <td class="is-ours">80.0%</td>
+                  <td class="col-gain">+7.0%</td>
+                </tr>
+                <tr>
+                  <td>Tool stowing<sup>*</sup></td>
+                  <td class="col-muted">Item-level (4 tools)</td>
+                  <td>63.3%</td>
+                  <td>31.7%</td>
+                  <td class="is-ours"><strong>65.0%</strong></td>
+                  <td class="col-gain">+33.3%</td>
+                </tr>
+                <tr>
+                  <td>Size sorting<sup>*</sup></td>
+                  <td class="col-muted">Item-level (15 blocks)</td>
+                  <td><strong>97.7%</strong></td>
+                  <td>89.3%</td>
+                  <td class="is-ours">96.2%</td>
+                  <td class="col-gain">+6.9%</td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td><strong>Unweighted mean</strong></td>
+                  <td class="col-muted">6 tasks</td>
+                  <td>83.5%</td>
+                  <td>70.2%</td>
+                  <td class="is-ours"><strong>85.8%</strong></td>
+                  <td class="col-gain"><strong>+15.6%</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+          <p class="real-table-note"><sup>*</sup> Item-level evaluation.</p>
         </div>
       </div>
     </section>
