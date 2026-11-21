@@ -442,7 +442,7 @@
         if (!res.ok) throw new Error('probe_meta fetch failed');
         this.meta = await res.json();
         this.initGL();
-        await this.selectCase('134054');
+        await this.selectCase('194590');
         this.ready = true;
         this.root.dataset.ready = 'true';
         this.resize();
