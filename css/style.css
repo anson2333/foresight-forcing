@@ -951,7 +951,7 @@ body.intro-open { overflow: hidden; }
 }
 .section-kicker { color: var(--blue); }
 
-.insight-section { background: var(--white); padding-bottom: 56px; }
+.insight-section { background: var(--white); }
 .idea-flow {
   margin: 62px 0 66px;
   display: grid;
@@ -1143,12 +1143,8 @@ body.intro-open { overflow: hidden; }
 .ablation-bars i::after { content: ""; display: block; width: var(--value); height: 100%; background: #8e99a7; }
 .ablation-bars div:first-child i::after { background: var(--violet); }
 
-.real-section { background: var(--paper); padding: 44px 0 84px; }
+.real-section { background: var(--paper); }
 .real-header { display: flex; align-items: end; justify-content: space-between; gap: 50px; }
-.real-header-compact { display: block; }
-.real-inline-lead { margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 6px 10px; font-size: 14px; line-height: 1.5; color: var(--muted); }
-.real-inline-lead .section-kicker { margin: 0; color: var(--blue); flex: 0 0 auto; }
-.real-inline-sep { color: var(--line-dark); }
 .real-score { flex: 0 0 auto; padding-left: 32px; border-left: 1px solid var(--line-dark); }
 .real-score strong { display: block; font-family: "Newsreader", Georgia, serif; font-size: 60px; line-height: 1; color: var(--coral); }
 .real-score span { color: var(--muted); font-size: 13px; }
@@ -2007,7 +2003,7 @@ body.intro-open { overflow: hidden; }
    Real-World Rollout Video Gallery & Benchmark Table
    ========================================================================== */
 .real-video-showcase {
-  margin-top: 16px;
+  margin-top: 40px;
   display: grid;
   gap: 20px;
 }
