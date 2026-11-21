@@ -156,50 +156,155 @@ if (zdRoot) {
   }
 }
 
-/* Simulation Benchmarks Explorer */
+/* Simulation Benchmarks Explorer (Sub-metric Pills + Expandable Full Table) */
 const resultData = {
   robotwin: {
-    label: 'RoboTwin 2.0 Full · Average',
-    score: '95.01%',
-    detail: '50 dual-arm tasks, clean and randomized evaluation',
-    rows: [
-      ['F²', 95.01, true],
-      ['Flex-π', 94.55, false],
-      ['ImageWAM', 93.38, false],
-      ['LingBot-VA', 92.20, false]
+    name: 'RoboTwin 2.0 Full',
+    decimals: 2,
+    defaultMetric: 'avg',
+    note: 'Success rates (%) on 50 dual-arm tasks. Bold: best; underlined: second best. P.T.: embodied-policy pretraining; Geo.: geometric supervision or inputs.',
+    flags: [
+      { key: 'pt', label: 'P.T.' },
+      { key: 'geo', label: 'Geo.' }
+    ],
+    metrics: [
+      { key: 'avg', pill: 'Average', col: 'Avg.', label: 'RoboTwin 2.0 Full · Average', detail: 'Unweighted mean across clean and randomized scenes (50 tasks, no policy pretraining).' },
+      { key: 'clean', pill: 'Clean', col: 'Clean', label: 'RoboTwin 2.0 Full · Clean', detail: 'Clean tabletop scenes across all 50 dual-arm tasks (+1.70 vs. ImageWAM).' },
+      { key: 'rand', pill: 'Randomized', col: 'Rand.', label: 'RoboTwin 2.0 Full · Randomized', detail: 'Randomized lighting, texture, and clutter scenes across 50 tasks (+1.56 vs. ImageWAM).' }
+    ],
+    groups: [
+      {
+        title: 'Vision-Language-Action Models',
+        rows: [
+          { name: 'π₀.₅', pt: true, geo: false, clean: 82.74, rand: 76.76, avg: 79.75 }
+        ]
+      },
+      {
+        title: 'World Action Models',
+        rows: [
+          { name: 'Motus', pt: true, geo: false, clean: 88.66, rand: 87.02, avg: 87.84 },
+          { name: 'LingBot-VA', pt: true, geo: false, clean: 92.90, rand: 91.50, avg: 92.20 },
+          { name: 'X-WAM', pt: true, geo: true, clean: 89.80, rand: 90.70, avg: 90.25 },
+          { name: 'WAM4D', pt: true, geo: true, clean: 93.80, rand: 89.90, avg: 91.80 },
+          { name: 'Flex-π (full joint)', pt: true, geo: true, clean: 94.30, rand: 94.80, avg: 94.55 },
+          { name: 'Fast-WAM', pt: false, geo: false, clean: 91.88, rand: 91.78, avg: 91.83 },
+          { name: 'GeoSem-WAM', pt: false, geo: true, clean: 92.94, rand: 92.14, avg: 92.54 },
+          { name: 'MECo-WAM', pt: false, geo: true, clean: 93.26, rand: 91.98, avg: 92.62 },
+          { name: 'ImageWAM', pt: false, geo: false, clean: 93.20, rand: 93.56, avg: 93.38 },
+          { name: 'F² (Ours)', shortName: 'F²', ours: true, pt: false, geo: true, clean: 94.90, rand: 95.12, avg: 95.01 }
+        ]
+      }
     ]
   },
   'libero-plus': {
-    label: 'LIBERO-Plus · Overall',
-    score: '84.5%',
-    detail: 'Seven perturbation dimensions from camera shift to observation noise',
-    rows: [
-      ['F²', 84.5, true],
-      ['π₀.₅', 84.4, false],
-      ['ImageWAM', 81.6, false],
-      ['X-WAM', 74.8, false]
+    name: 'LIBERO-Plus',
+    decimals: 1,
+    defaultMetric: 'overall',
+    note: 'Zero-shot robustness (%) trained solely on original LIBERO demonstrations (no LIBERO-Plus augmentation). Bold: best; underlined: second best. P.T.: embodied-policy pretraining.',
+    flags: [
+      { key: 'pt', label: 'P.T.' }
+    ],
+    metrics: [
+      { key: 'overall', pill: 'Overall', col: 'Overall', label: 'LIBERO-Plus · Overall', detail: 'Mean across all seven distribution-shift perturbation dimensions (+2.9 vs. ImageWAM).' },
+      { key: 'cam', pill: 'Camera', col: 'Cam.', label: 'LIBERO-Plus · Camera viewpoint', detail: 'Camera pose and viewpoint shifts (+5.4 vs. ImageWAM, highest among all methods).' },
+      { key: 'rob', pill: 'Robot', col: 'Rob.', label: 'LIBERO-Plus · Robot initial state', detail: 'Perturbed robot initial joint configurations (+8.7 vs. ImageWAM).' },
+      { key: 'lang', pill: 'Language', col: 'Lang.', label: 'LIBERO-Plus · Language rephrasing', detail: 'Paraphrased task instructions (tied highest at 90.6%).' },
+      { key: 'light', pill: 'Lighting', col: 'Light', label: 'LIBERO-Plus · Lighting shift', detail: 'Scene illumination and shadow shifts (highest at 98.3%).' },
+      { key: 'bg', pill: 'Background', col: 'Bg.', label: 'LIBERO-Plus · Background change', detail: 'Unseen tabletop and room textures (+2.0 vs. ImageWAM).' },
+      { key: 'noise', pill: 'Noise', col: 'Noise', label: 'LIBERO-Plus · Observation noise', detail: 'Sensor and observation corruption (highest at 95.8%).' },
+      { key: 'layout', pill: 'Layout', col: 'Layout', label: 'LIBERO-Plus · Object layout', detail: 'Shifted initial object positions (+1.2 vs. ImageWAM).' }
+    ],
+    groups: [
+      {
+        title: 'Vision-Language-Action Models',
+        rows: [
+          { name: 'π₀.₅', pt: true, cam: 78.4, rob: 73.6, lang: 80.8, light: 96.2, bg: 94.1, noise: 89.0, layout: 84.5, overall: 84.4 },
+          { name: 'starVLA', pt: false, cam: 64.0, rob: 57.2, lang: 85.8, light: 93.8, bg: 96.0, noise: 81.0, layout: 77.3, overall: 77.8 }
+        ]
+      },
+      {
+        title: 'World Action Models',
+        rows: [
+          { name: 'OpenWAM-α', pt: true, cam: 33.2, rob: 75.9, lang: 87.6, light: 97.0, bg: 85.6, noise: 39.9, layout: 77.4, overall: 68.8 },
+          { name: 'Fast-WAM', pt: false, cam: 16.4, rob: 44.5, lang: 68.9, light: 78.2, bg: 53.7, noise: 37.7, layout: 60.7, overall: 51.5 },
+          { name: 'X-WAM', pt: true, cam: 72.9, rob: 46.3, lang: 88.5, light: 93.6, bg: 88.3, noise: 62.9, layout: 80.8, overall: 74.8 },
+          { name: '4D-WAM', pt: true, cam: 45.2, rob: 64.3, lang: 90.6, light: 94.3, bg: 57.7, noise: 69.1, layout: 79.2, overall: 71.0 },
+          { name: 'ImageWAM', pt: false, cam: 77.7, rob: 48.3, lang: 89.9, light: 97.5, bg: 86.0, noise: 95.2, layout: 81.8, overall: 81.6 },
+          { name: 'F² (Ours)', shortName: 'F²', ours: true, pt: false, cam: 83.1, rob: 57.0, lang: 90.6, light: 98.3, bg: 88.0, noise: 95.8, layout: 83.0, overall: 84.5 }
+        ]
+      }
     ]
   },
   c2r: {
-    label: 'RoboTwin Clean-to-Random · Average',
-    score: '77.45%',
-    detail: 'Policies trained on clean demonstrations and evaluated on shifted scenes',
-    rows: [
-      ['F²', 77.45, true],
-      ['UniWAM', 71.34, false],
-      ['ImageWAM', 70.35, false],
-      ['4D-WAM', 61.65, false]
+    name: 'RoboTwin 2.0 Clean-to-Random',
+    decimals: 2,
+    defaultMetric: 'avg',
+    note: 'Success rates (%) trained solely on clean demonstrations and evaluated on clean and randomized scenes. Bold: best; underlined: second best. 4D-WAM follows the official RoboTwin 2.0 leaderboard.',
+    flags: [
+      { key: 'pt', label: 'P.T.' },
+      { key: 'geo', label: 'Geo.' }
+    ],
+    metrics: [
+      { key: 'avg', pill: 'Average', col: 'Avg.', label: 'RoboTwin C2R · Average', detail: 'Mean across clean and shifted scenes (+7.10 vs. ImageWAM, +6.11 vs. UniWAM).' },
+      { key: 'clean', pill: 'Clean', col: 'Clean', label: 'RoboTwin C2R · Clean', detail: 'In-distribution clean evaluation after clean-only fine-tuning (+5.96 vs. ImageWAM).' },
+      { key: 'rand', pill: 'Randomized', col: 'Rand.', label: 'RoboTwin C2R · Randomized', detail: 'Out-of-distribution randomized scenes without randomized training data (+8.24 vs. ImageWAM).' }
+    ],
+    groups: [
+      {
+        title: 'Vision-Language-Action Models',
+        rows: [
+          { name: 'π₀.₅', pt: true, geo: false, clean: 70.66, rand: 46.00, avg: 58.33 }
+        ]
+      },
+      {
+        title: 'World Action Models',
+        rows: [
+          { name: 'Fast-WAM', pt: false, geo: false, clean: 77.76, rand: 1.92, avg: 39.84 },
+          { name: 'UniWAM', pt: true, geo: false, clean: 75.12, rand: 67.56, avg: 71.34 },
+          { name: 'X-WAM', pt: true, geo: true, clean: 69.98, rand: 25.84, avg: 47.91 },
+          { name: '4D-WAM', pt: true, geo: true, clean: 81.50, rand: 41.80, avg: 61.65 },
+          { name: 'ImageWAM', pt: true, geo: false, clean: 81.88, rand: 58.82, avg: 70.35 },
+          { name: 'F² (Ours)', shortName: 'F²', ours: true, pt: true, geo: true, clean: 87.84, rand: 67.06, avg: 77.45 }
+        ]
+      }
     ]
   },
   libero: {
-    label: 'LIBERO · Four-suite average',
-    score: '98.5%',
-    detail: 'Spatial, Object, Goal, and Long suites',
-    rows: [
-      ['F²', 98.5, true],
-      ['LingBot-VA', 98.5, false],
-      ['ImageWAM', 98.4, false],
-      ['π₀.₅', 96.9, false]
+    name: 'LIBERO',
+    decimals: 1,
+    defaultMetric: 'avg',
+    note: 'Success rates (%) across the four standard LIBERO suites (10 tasks × 50 trials each). Bold: best; underlined: second best. Geo.: geometric supervision or inputs.',
+    flags: [
+      { key: 'geo', label: 'Geo.' }
+    ],
+    metrics: [
+      { key: 'avg', pill: 'Average', col: 'Avg.', label: 'LIBERO · Four-suite average', detail: 'Mean over Spatial, Object, Goal, and Long suites (tied highest at 98.5%).' },
+      { key: 'spat', pill: 'Spatial', col: 'Spatial', label: 'LIBERO · Spatial suite', detail: 'Spatial relationship generalization (+2.2 vs. ImageWAM).' },
+      { key: 'obj', pill: 'Object', col: 'Object', label: 'LIBERO · Object suite', detail: 'Novel object manipulation (100.0% perfect score).' },
+      { key: 'goal', pill: 'Goal', col: 'Goal', label: 'LIBERO · Goal suite', detail: 'Diverse manipulation goals in shared tabletop scenes.' },
+      { key: 'long', pill: 'Long', col: 'Long', label: 'LIBERO · Long suite', detail: 'Multi-stage long-horizon manipulation tasks.' }
+    ],
+    groups: [
+      {
+        title: 'Vision-Language-Action Models',
+        rows: [
+          { name: 'OpenVLA-OFT', geo: false, spat: 97.6, obj: 98.4, goal: 97.9, long: 94.5, avg: 97.1 },
+          { name: 'π₀.₅', geo: false, spat: 98.8, obj: 98.2, goal: 98.0, long: 92.4, avg: 96.9 },
+          { name: 'Spatial Forcing', geo: true, spat: 99.4, obj: 99.6, goal: 98.8, long: 96.0, avg: 98.5 }
+        ]
+      },
+      {
+        title: 'World Action Models',
+        rows: [
+          { name: 'LingBot-VA', geo: false, spat: 98.5, obj: 99.6, goal: 97.2, long: 98.5, avg: 98.5 },
+          { name: 'Motus', geo: false, spat: 96.8, obj: 99.8, goal: 96.6, long: 97.6, avg: 97.7 },
+          { name: 'Fast-WAM', geo: false, spat: 98.2, obj: 100.0, goal: 97.0, long: 95.2, avg: 97.6 },
+          { name: 'MECo-WAM', geo: true, spat: 98.8, obj: 100.0, goal: 98.2, long: 95.8, avg: 98.2 },
+          { name: 'Flex-π (full joint)', geo: true, spat: 99.6, obj: 99.8, goal: 98.6, long: 96.0, avg: 98.5 },
+          { name: 'ImageWAM', geo: false, spat: 97.2, obj: 99.2, goal: 98.8, long: 98.4, avg: 98.4 },
+          { name: 'F² (Ours)', shortName: 'F²', ours: true, geo: true, spat: 99.4, obj: 100.0, goal: 97.8, long: 96.6, avg: 98.5 }
+        ]
+      }
     ]
   }
 };
@@ -209,24 +314,145 @@ const resultScore = document.querySelector('[data-result-score]');
 const resultDetail = document.querySelector('[data-result-detail]');
 const resultChart = document.querySelector('[data-result-chart]');
 const resultTabs = document.querySelectorAll('[data-result-tab]');
+const resultSubtabsEl = document.querySelector('[data-result-subtabs]');
+const resultTableToggle = document.querySelector('[data-result-table-toggle]');
+const resultToggleText = document.querySelector('[data-result-toggle-text]');
+const resultToggleIcon = document.querySelector('[data-result-toggle-icon]');
+const resultTableDrawer = document.querySelector('[data-result-table-drawer]');
+const resultDetailTable = document.querySelector('[data-result-detail-table]');
+const resultDetailNote = document.querySelector('[data-result-detail-note]');
 
-function renderResult(key) {
-  const result = resultData[key];
-  if (!result || !resultChart) return;
-  const floor = Math.min(...result.rows.map((row) => row[1])) - 5;
+let currentBenchKey = 'robotwin';
+let currentMetricKey = 'avg';
+let detailTableOpen = false;
 
-  resultLabel.textContent = result.label;
-  resultScore.textContent = result.score;
-  resultDetail.textContent = result.detail;
-  resultChart.innerHTML = result.rows.map(([name, score, ours]) => {
-    const width = Math.max(8, ((score - floor) / (100 - floor)) * 100);
+function allRowsOf(bench) {
+  return bench.groups.flatMap((g) => g.rows);
+}
+
+function getColRankThresholds(rows, colKey) {
+  const uniq = [...new Set(rows.map((r) => r[colKey]))].sort((a, b) => b - a);
+  return { best: uniq[0], second: uniq.length > 1 ? uniq[1] : null };
+}
+
+function renderDetailTable(bench) {
+  if (!resultDetailTable) return;
+  const rows = allRowsOf(bench);
+  const dec = bench.decimals;
+  const ranks = {};
+  bench.metrics.forEach((m) => {
+    ranks[m.key] = getColRankThresholds(rows, m.key);
+  });
+
+  // Put metric columns in paper order (Clean, Rand, Avg / Cam..Layout, Overall / Spat..Long, Avg)
+  const orderedMetrics = [...bench.metrics.slice(1), bench.metrics[0]];
+  const colSpan = 1 + bench.flags.length + orderedMetrics.length;
+
+  const headHtml = `
+    <thead>
+      <tr>
+        <th scope="col">Method</th>
+        ${bench.flags.map((f) => `<th scope="col" class="col-flag">${f.label}</th>`).join('')}
+        ${orderedMetrics.map((m) => `<th scope="col" class="col-num${m.key === currentMetricKey ? ' is-active-col' : ''}" data-col-pick="${m.key}" title="Plot ${m.pill} in chart">${m.col}</th>`).join('')}
+      </tr>
+    </thead>`;
+
+  const bodyHtml = bench.groups.map((grp) => {
+    const grpRow = `<tr class="sim-group-row"><td colspan="${colSpan}">${grp.title}</td></tr>`;
+    const dataRows = grp.rows.map((r) => {
+      const flagCells = bench.flags.map((f) =>
+        `<td class="col-flag ${r[f.key] ? 'flag-yes' : 'flag-no'}">${r[f.key] ? '✓' : '×'}</td>`
+      ).join('');
+      const metricCells = orderedMetrics.map((m) => {
+        const val = r[m.key];
+        const txt = val.toFixed(dec);
+        const { best, second } = ranks[m.key];
+        let inner = txt;
+        if (val === best) inner = `<strong>${txt}</strong>`;
+        else if (second !== null && val === second) inner = `<u>${txt}</u>`;
+        return `<td class="col-num${m.key === currentMetricKey ? ' is-active-col' : ''}">${inner}</td>`;
+      }).join('');
+      return `
+        <tr class="${r.ours ? 'is-ours-row' : ''}">
+          <td class="col-method">${r.ours ? '<strong>F<sup>2</sup> (Ours)</strong>' : r.name}</td>
+          ${flagCells}
+          ${metricCells}
+        </tr>`;
+    }).join('');
+    return grpRow + dataRows;
+  }).join('');
+
+  resultDetailTable.innerHTML = `${headHtml}<tbody>${bodyHtml}</tbody>`;
+  if (resultDetailNote) resultDetailNote.textContent = bench.note;
+
+  // Clicking a column header in the full table also switches the active chart metric!
+  resultDetailTable.querySelectorAll('[data-col-pick]').forEach((th) => {
+    th.addEventListener('click', () => {
+      currentMetricKey = th.dataset.colPick;
+      renderResult(currentBenchKey, currentMetricKey);
+    });
+  });
+}
+
+function renderResult(benchKey, metricKey) {
+  const bench = resultData[benchKey];
+  if (!bench || !resultChart) return;
+  currentBenchKey = benchKey;
+  const metricObj = bench.metrics.find((m) => m.key === metricKey) || bench.metrics.find((m) => m.key === bench.defaultMetric) || bench.metrics[0];
+  currentMetricKey = metricObj.key;
+
+  // Render sub-metric pills
+  if (resultSubtabsEl) {
+    resultSubtabsEl.innerHTML = bench.metrics.map((m) => `
+      <button class="result-subtab${m.key === currentMetricKey ? ' is-active' : ''}" type="button" role="tab" aria-selected="${m.key === currentMetricKey}" data-submetric="${m.key}">${m.pill}</button>
+    `).join('');
+    resultSubtabsEl.querySelectorAll('[data-submetric]').forEach((btn) => {
+      btn.addEventListener('click', () => renderResult(currentBenchKey, btn.dataset.submetric));
+    });
+  }
+
+  const allRows = allRowsOf(bench);
+  const oursRow = allRows.find((r) => r.ours);
+  const dec = bench.decimals;
+
+  // Top 5 bars sorted by selected metric, always including F² and ImageWAM
+  const sorted = [...allRows].sort((a, b) => b[currentMetricKey] - a[currentMetricKey]);
+  let chartRows = sorted.slice(0, 5);
+  for (const mustName of ['F² (Ours)', 'ImageWAM']) {
+    if (!chartRows.some((r) => r.name === mustName)) {
+      const found = allRows.find((r) => r.name === mustName);
+      if (found) chartRows[chartRows.length - 1] = found;
+    }
+  }
+  chartRows.sort((a, b) => b[currentMetricKey] - a[currentMetricKey]);
+
+  const minVal = Math.min(...chartRows.map((r) => r[currentMetricKey]));
+  const floor = Math.max(0, minVal - (minVal > 85 ? 5 : 10));
+
+  resultLabel.textContent = metricObj.label;
+  resultScore.textContent = `${oursRow[currentMetricKey].toFixed(dec)}%`;
+  resultDetail.textContent = metricObj.detail;
+  resultChart.innerHTML = chartRows.map((row) => {
+    const val = row[currentMetricKey];
+    const width = Math.max(8, ((val - floor) / (100 - floor)) * 100);
+    const displayName = row.shortName || row.name.replace(' (full joint)', '');
     return `
-      <div class="chart-row${ours ? ' is-ours' : ''}">
-        <span>${name}</span>
+      <div class="chart-row${row.ours ? ' is-ours' : ''}">
+        <span>${displayName}</span>
         <div class="chart-track"><div class="chart-fill" style="width:${width}%"></div></div>
-        <strong>${score.toFixed(score % 1 === 0 ? 1 : 2)}</strong>
+        <strong>${val.toFixed(dec)}</strong>
       </div>`;
   }).join('');
+
+  if (resultToggleText) {
+    resultToggleText.textContent = detailTableOpen
+      ? `Hide full table (${allRows.length} methods)`
+      : `Show full table (${allRows.length} methods)`;
+  }
+  if (resultToggleIcon) {
+    resultToggleIcon.textContent = detailTableOpen ? '−' : '+';
+  }
+  renderDetailTable(bench);
 }
 
 resultTabs.forEach((tab) => {
@@ -237,11 +463,30 @@ resultTabs.forEach((tab) => {
     });
     tab.classList.add('is-active');
     tab.setAttribute('aria-selected', 'true');
-    renderResult(tab.dataset.resultTab);
+    const key = tab.dataset.resultTab;
+    renderResult(key, resultData[key].defaultMetric);
   });
 });
 
-renderResult('robotwin');
+if (resultTableToggle && resultTableDrawer) {
+  resultTableToggle.addEventListener('click', () => {
+    detailTableOpen = !detailTableOpen;
+    resultTableDrawer.hidden = !detailTableOpen;
+    resultTableToggle.setAttribute('aria-expanded', String(detailTableOpen));
+    resultTableToggle.classList.toggle('is-open', detailTableOpen);
+    const count = allRowsOf(resultData[currentBenchKey]).length;
+    if (resultToggleText) {
+      resultToggleText.textContent = detailTableOpen
+        ? `Hide full table (${count} methods)`
+        : `Show full table (${count} methods)`;
+    }
+    if (resultToggleIcon) {
+      resultToggleIcon.textContent = detailTableOpen ? '−' : '+';
+    }
+  });
+}
+
+renderResult('robotwin', 'avg');
 
 /* Controlled Ablation Explorer (LIBERO-Plus) */
 const ablationData = {

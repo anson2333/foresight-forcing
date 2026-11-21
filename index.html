@@ -488,6 +488,11 @@
             <button class="result-tab" type="button" role="tab" aria-selected="false" aria-controls="result-panel" data-result-tab="libero">LIBERO</button>
           </div>
 
+          <div class="result-subbar" aria-label="Select benchmark sub-metric">
+            <span class="result-subbar-label">Split / metric</span>
+            <div class="result-subtabs" role="tablist" data-result-subtabs></div>
+          </div>
+
           <div class="result-panel" id="result-panel" role="tabpanel" aria-live="polite">
             <div class="result-summary">
               <p data-result-label>RoboTwin 2.0 Full · Average</p>
@@ -495,6 +500,23 @@
               <span data-result-detail>50 dual-arm tasks, clean and randomized evaluation</span>
             </div>
             <div class="bar-chart" data-result-chart aria-label="Benchmark comparison bar chart"></div>
+          </div>
+
+          <div class="result-table-footer">
+            <button class="result-table-toggle" type="button" aria-expanded="false" aria-controls="result-detail-drawer" data-result-table-toggle>
+              <span class="result-toggle-pill">
+                <span class="result-toggle-icon" aria-hidden="true" data-result-toggle-icon>+</span>
+                <span data-result-toggle-text>Show full benchmark table · 11 methods</span>
+                <span class="result-toggle-chevron" aria-hidden="true">▾</span>
+              </span>
+            </button>
+          </div>
+
+          <div class="result-detail-drawer" id="result-detail-drawer" data-result-table-drawer hidden>
+            <div class="result-detail-scroll">
+              <table class="sim-detail-table" data-result-detail-table></table>
+            </div>
+            <p class="result-detail-note" data-result-detail-note></p>
           </div>
         </div>
 
