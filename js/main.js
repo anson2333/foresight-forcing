@@ -225,12 +225,12 @@ const resultData = {
       {
         title: 'World Action Models',
         rows: [
-          { name: 'F² (Ours)', shortName: 'F²', ours: true, pt: false, cam: 83.1, rob: 57.0, lang: 90.6, light: 98.3, bg: 88.0, noise: 95.8, layout: 83.0, overall: 84.5 },
           { name: 'OpenWAM-α', pt: true, cam: 33.2, rob: 75.9, lang: 87.6, light: 97.0, bg: 85.6, noise: 39.9, layout: 77.4, overall: 68.8 },
           { name: 'Fast-WAM', pt: false, cam: 16.4, rob: 44.5, lang: 68.9, light: 78.2, bg: 53.7, noise: 37.7, layout: 60.7, overall: 51.5 },
           { name: 'X-WAM', pt: true, cam: 72.9, rob: 46.3, lang: 88.5, light: 93.6, bg: 88.3, noise: 62.9, layout: 80.8, overall: 74.8 },
           { name: '4D-WAM', pt: true, cam: 45.2, rob: 64.3, lang: 90.6, light: 94.3, bg: 57.7, noise: 69.1, layout: 79.2, overall: 71.0 },
           { name: 'ImageWAM', pt: false, cam: 77.7, rob: 48.3, lang: 89.9, light: 97.5, bg: 86.0, noise: 95.2, layout: 81.8, overall: 81.6 },
+          { name: 'F² (Ours)', shortName: 'F²', ours: true, pt: false, cam: 83.1, rob: 57.0, lang: 90.6, light: 98.3, bg: 88.0, noise: 95.8, layout: 83.0, overall: 84.5 }
         ]
       }
     ]
