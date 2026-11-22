@@ -416,7 +416,10 @@ function renderResult(benchKey, metricKey) {
   const dec = bench.decimals;
 
   // Top 5 bars sorted by selected metric, always including F² and ImageWAM
-  const sorted = [...allRows].sort((a, b) => b[currentMetricKey] - a[currentMetricKey]);
+  const sorted = [...allRows].sort((a, b) => {
+    const scoreDiff = b[currentMetricKey] - a[currentMetricKey];
+    return scoreDiff || Number(Boolean(b.ours)) - Number(Boolean(a.ours));
+  });
   let chartRows = sorted.slice(0, 5);
   for (const mustName of ['F² (Ours)', 'ImageWAM']) {
     if (!chartRows.some((r) => r.name === mustName)) {
@@ -424,7 +427,10 @@ function renderResult(benchKey, metricKey) {
       if (found) chartRows[chartRows.length - 1] = found;
     }
   }
-  chartRows.sort((a, b) => b[currentMetricKey] - a[currentMetricKey]);
+  chartRows.sort((a, b) => {
+    const scoreDiff = b[currentMetricKey] - a[currentMetricKey];
+    return scoreDiff || Number(Boolean(b.ours)) - Number(Boolean(a.ours));
+  });
 
   const minVal = Math.min(...chartRows.map((r) => r[currentMetricKey]));
   const floor = Math.max(0, minVal - (minVal > 85 ? 5 : 10));
