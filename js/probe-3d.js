@@ -84,22 +84,22 @@
     }
 
     void main() {
-      // Ghost pass: show ONLY changed foreground points (subsampled 1-in-2 for clean see-through look)
+      // Ghost pass: show all changed foreground points as a crisp translucent silhouette
       if (uGhostMode > 0.5) {
-        if (aChanged < 0.5 || (gl_VertexID % 2) != 0) {
+        if (aChanged < 0.5) {
           gl_Position = vec4(2.0, 2.0, 2.0, 1.0);
           gl_PointSize = 0.0;
           vAlpha = 0.0;
           vColor = vec3(0.0);
           return;
         }
-        vec3 baseRgb = pow(aRgb, vec3(0.95));
-        vColor = mix(baseRgb, uGhostTint, 0.58);
+        vec3 baseRgb = pow(aRgb, vec3(0.92));
+        vColor = clamp(mix(baseRgb, uGhostTint, 0.46) * 1.08, 0.0, 1.0);
         vAlpha = uOpacity;
         vec4 gClip = uViewProj * vec4(aPos, 1.0);
         gl_Position = gClip;
-        float gDist = max(0.25, gClip.w);
-        gl_PointSize = clamp((3.1 * uPointScale) / gDist, 1.6, 10.0);
+        float gDist = max(0.22, gClip.w);
+        gl_PointSize = clamp((3.85 * uPointScale) / gDist, 2.0, 15.0);
         return;
       }
 
@@ -113,8 +113,8 @@
 
       vec4 clip = uViewProj * vec4(aPos, 1.0);
       gl_Position = clip;
-      float dist = max(0.25, clip.w);
-      gl_PointSize = clamp((3.9 * uPointScale) / dist, 1.8, 13.0);
+      float dist = max(0.22, clip.w);
+      gl_PointSize = clamp((3.9 * uPointScale) / dist, 1.8, 15.5);
     }
   `;
 
@@ -168,7 +168,7 @@
       vStyle = aStyle;
       vec4 clip = uViewProj * vec4(aPos, 1.0);
       gl_Position = clip;
-      gl_PointSize = clamp((aSize * uPointScale) / max(0.25, clip.w), 6.0, 30.0);
+      gl_PointSize = clamp((aSize * uPointScale) / max(0.25, clip.w), 4.5, 20.0);
     }
   `;
 
@@ -218,9 +218,14 @@
   }
 
   const CAM_PRESETS = {
-    oblique: { yaw: 0.34, pitch: 0.32, dist: 1.06 },
-    front:   { yaw: 0.00, pitch: 0.04, dist: 1.15 },
-    top:     { yaw: 0.06, pitch: 0.90, dist: 1.04 }
+    oblique: { yaw: 0.34, pitch: 0.32, dist: 1.02 },
+    front:   { yaw: 0.00, pitch: 0.04, dist: 1.10 },
+    top:     { yaw: 0.06, pitch: 0.90, dist: 1.00 }
+  };
+
+  const CASE_DIST_SCALE = {
+    '194590': 0.62,
+    '134054': 0.94
   };
 
   class Probe3DViewer {
@@ -250,10 +255,11 @@
 
       this.yaw = CAM_PRESETS.oblique.yaw;
       this.pitch = CAM_PRESETS.oblique.pitch;
-      this.dist = CAM_PRESETS.oblique.dist;
+      this.dist = CAM_PRESETS.oblique.dist * (CASE_DIST_SCALE['194590'] || 1);
       this.targetYaw = this.yaw;
       this.targetPitch = this.pitch;
       this.targetDist = this.dist;
+      this.activeCamPreset = 'oblique';
 
       this.dragging = false;
       this.lastX = 0;
@@ -290,10 +296,11 @@
         btn.addEventListener('click', () => {
           const preset = CAM_PRESETS[btn.dataset.probeCam];
           if (!preset) return;
+          this.activeCamPreset = btn.dataset.probeCam;
           this.camBtns.forEach((b) => b.classList.toggle('is-active', b === btn));
           this.targetYaw = preset.yaw;
           this.targetPitch = preset.pitch;
-          this.targetDist = preset.dist;
+          this.targetDist = preset.dist * this.caseDistScale();
         });
       });
 
@@ -334,15 +341,16 @@
       }
 
       this.zoomInBtn?.addEventListener('click', () => {
-        this.targetDist = Math.max(0.68, this.targetDist * 0.85);
+        this.targetDist = Math.max(0.28, this.targetDist * 0.82);
       });
       this.zoomOutBtn?.addEventListener('click', () => {
         this.targetDist = Math.min(2.4, this.targetDist * 1.18);
       });
       this.resetBtn?.addEventListener('click', () => {
+        this.activeCamPreset = 'oblique';
         this.targetYaw = CAM_PRESETS.oblique.yaw;
         this.targetPitch = CAM_PRESETS.oblique.pitch;
-        this.targetDist = CAM_PRESETS.oblique.dist;
+        this.targetDist = CAM_PRESETS.oblique.dist * this.caseDistScale();
         this.camBtns.forEach((b) => b.classList.toggle('is-active', b.dataset.probeCam === 'oblique'));
       });
 
@@ -402,7 +410,7 @@
         else if (e.deltaMode === 2) dy *= 120;
         dy = Math.max(-120, Math.min(120, dy));
         const factor = Math.exp(dy * (e.ctrlKey || e.metaKey ? 0.0045 : 0.0018));
-        this.targetDist = Math.max(0.55, Math.min(2.55, this.targetDist * factor));
+        this.targetDist = Math.max(0.26, Math.min(2.55, this.targetDist * factor));
       }, { passive: false });
 
       this.resizeObserver = new ResizeObserver(() => this.resize());
@@ -531,6 +539,11 @@
       return vao;
     }
 
+    caseDistScale() {
+      const id = this.activeCase?.cfg?.id || '194590';
+      return CASE_DIST_SCALE[id] || 1.0;
+    }
+
     async selectCase(id) {
       const cfg = this.meta?.cases?.[id];
       if (!cfg) return;
@@ -550,6 +563,9 @@
       }
 
       this.activeCase = this.cache.get(id);
+      const preset = CAM_PRESETS[this.activeCamPreset] || CAM_PRESETS.oblique;
+      this.targetDist = preset.dist * this.caseDistScale();
+      if (!this.ready) this.dist = this.targetDist;
       if (this.descEl) {
         this.descEl.innerHTML = cfg.desc
           .replace(/O_t/g, 'O<sub>t</sub>')
@@ -620,19 +636,19 @@
       const basePt = pts[shaftEnd];
       const tipPt = pts[segs];
       const sHead = sideAt(shaftEnd);
-      const hw = width * 2.8;
+      const hw = width * 2.4;
       const hL = [basePt[0] - sHead[0] * hw, basePt[1] - sHead[1] * hw, basePt[2] - sHead[2] * hw];
       const hR = [basePt[0] + sHead[0] * hw, basePt[1] + sHead[1] * hw, basePt[2] + sHead[2] * hw];
       pushV(hL, colEnd, alpha); pushV(hR, colEnd, alpha); pushV(tipPt, colEnd, alpha);
 
-      markers.push(tipPt[0], tipPt[1], tipPt[2], 8.6, colEnd[0], colEnd[1], colEnd[2], alpha, 0.0);
+      markers.push(tipPt[0], tipPt[1], tipPt[2], 5.4, colEnd[0], colEnd[1], colEnd[2], alpha, 0.0);
 
       if (pulseT !== null) {
         const it = 1 - pulseT;
         const bx = it * it * p0[0] + 2 * it * pulseT * mid[0] + pulseT * pulseT * p1[0];
         const by = it * it * p0[1] + 2 * it * pulseT * mid[1] + pulseT * pulseT * p1[1];
         const bz = it * it * p0[2] + 2 * it * pulseT * mid[2] + pulseT * pulseT * p1[2];
-        markers.push(bx, by, bz, 10.5, colEnd[0], colEnd[1], colEnd[2], Math.sin(pulseT * Math.PI) * 0.95, 1.0);
+        markers.push(bx, by, bz, 6.8, colEnd[0], colEnd[1], colEnd[2], Math.sin(pulseT * Math.PI) * 0.95, 1.0);
       }
     }
 
@@ -684,11 +700,11 @@
       gl.bindVertexArray(solidVao);
       gl.drawArrays(gl.POINTS, 0, solidCount);
 
-      // 2. Very faint translucent ghost of the complementary frame's moved foreground object/arm
+      // 2. Translucent ghost of the complementary frame's moved foreground object/arm
       if (this.showGhost) {
         gl.depthMask(false);
         gl.uniform1f(this.uC.ghostMode, 1.0);
-        gl.uniform1f(this.uC.opacity, 0.28);
+        gl.uniform1f(this.uC.opacity, 0.46);
         if (solidIsFuture) {
           // Viewing solid Future -> faint silver-blue ghost of original Current O_t pose
           gl.uniform3f(this.uC.ghostTint, 0.65, 0.78, 0.96);
@@ -707,27 +723,29 @@
       const timeSec = now * 0.001;
       const pulse = this.reducedMotion ? 0.55 : (timeSec * 0.55) % 1.0;
       const countPts = this.showAll5 ? cfg.start.length : 1;
-      const ribbonW = this.showAll5 ? 0.0046 : 0.0064;
+      const isCompact = cfg.id === '194590';
+      const ribbonW = (this.showAll5 ? 0.0017 : 0.0023) * (isCompact ? 0.72 : 1.0);
+      const liftScale = isCompact ? 0.52 : 1.0;
 
       for (let i = 0; i < countPts; i += 1) {
         const p0 = cfg.start[i];
         const s0 = [p0[0], p0[1] + 0.012, p0[2] + 0.018];
-        markers.push(s0[0], s0[1], s0[2], this.showAll5 ? 7.4 : 9.2, 0.96, 0.98, 1.0, 0.98, 0.0);
+        markers.push(s0[0], s0[1], s0[2], this.showAll5 ? 4.8 : 6.0, 0.96, 0.98, 1.0, 0.98, 0.0);
 
         if (this.layers.baseline) {
           const pb = cfg.baseline[i];
           const sb = [pb[0], pb[1] + 0.012, pb[2] + 0.018];
-          this.pushTrajectoryRibbon(tris, markers, s0, sb, eye, 0.042, ribbonW * 0.88, [0.98, 0.58, 0.24], [0.98, 0.45, 0.28], 0.90, null);
+          this.pushTrajectoryRibbon(tris, markers, s0, sb, eye, 0.042 * liftScale, ribbonW * 0.88, [0.98, 0.58, 0.24], [0.98, 0.45, 0.28], 0.90, null);
         }
         if (this.layers.gt) {
           const pg = cfg.gt[i];
           const sg = [pg[0], pg[1] + 0.012, pg[2] + 0.018];
-          this.pushTrajectoryRibbon(tris, markers, s0, sg, eye, 0.068, ribbonW * 0.96, [0.22, 0.85, 0.62], [0.24, 0.94, 0.68], 0.96, null);
+          this.pushTrajectoryRibbon(tris, markers, s0, sg, eye, 0.068 * liftScale, ribbonW * 0.96, [0.22, 0.85, 0.62], [0.24, 0.94, 0.68], 0.96, null);
         }
         if (this.layers.ours) {
           const po = cfg.ours[i];
           const so = [po[0], po[1] + 0.012, po[2] + 0.018];
-          this.pushTrajectoryRibbon(tris, markers, s0, so, eye, 0.092, ribbonW * 1.06, [0.68, 0.48, 1.0], [0.26, 0.88, 1.0], 0.98, (pulse + i * 0.11) % 1.0);
+          this.pushTrajectoryRibbon(tris, markers, s0, so, eye, 0.092 * liftScale, ribbonW * 1.06, [0.68, 0.48, 1.0], [0.26, 0.88, 1.0], 0.98, (pulse + i * 0.11) % 1.0);
         }
       }
 
