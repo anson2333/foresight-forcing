@@ -168,7 +168,7 @@
       vStyle = aStyle;
       vec4 clip = uViewProj * vec4(aPos, 1.0);
       gl_Position = clip;
-      gl_PointSize = clamp((aSize * uPointScale) / max(0.25, clip.w), 4.5, 20.0);
+      gl_PointSize = clamp((aSize * uPointScale) / max(0.25, clip.w), 4.0, 15.0);
     }
   `;
 
@@ -636,19 +636,19 @@
       const basePt = pts[shaftEnd];
       const tipPt = pts[segs];
       const sHead = sideAt(shaftEnd);
-      const hw = width * 2.4;
+      const hw = width * 2.8;
       const hL = [basePt[0] - sHead[0] * hw, basePt[1] - sHead[1] * hw, basePt[2] - sHead[2] * hw];
       const hR = [basePt[0] + sHead[0] * hw, basePt[1] + sHead[1] * hw, basePt[2] + sHead[2] * hw];
       pushV(hL, colEnd, alpha); pushV(hR, colEnd, alpha); pushV(tipPt, colEnd, alpha);
 
-      markers.push(tipPt[0], tipPt[1], tipPt[2], 5.4, colEnd[0], colEnd[1], colEnd[2], alpha, 0.0);
+      markers.push(tipPt[0], tipPt[1], tipPt[2], 4.4, colEnd[0], colEnd[1], colEnd[2], alpha, 0.0);
 
       if (pulseT !== null) {
         const it = 1 - pulseT;
         const bx = it * it * p0[0] + 2 * it * pulseT * mid[0] + pulseT * pulseT * p1[0];
         const by = it * it * p0[1] + 2 * it * pulseT * mid[1] + pulseT * pulseT * p1[1];
         const bz = it * it * p0[2] + 2 * it * pulseT * mid[2] + pulseT * pulseT * p1[2];
-        markers.push(bx, by, bz, 6.8, colEnd[0], colEnd[1], colEnd[2], Math.sin(pulseT * Math.PI) * 0.95, 1.0);
+        markers.push(bx, by, bz, 5.6, colEnd[0], colEnd[1], colEnd[2], Math.sin(pulseT * Math.PI) * 0.95, 1.0);
       }
     }
 
@@ -724,13 +724,14 @@
       const pulse = this.reducedMotion ? 0.55 : (timeSec * 0.55) % 1.0;
       const countPts = this.showAll5 ? cfg.start.length : 1;
       const isCompact = cfg.id === '194590';
-      const ribbonW = (this.showAll5 ? 0.0017 : 0.0023) * (isCompact ? 0.72 : 1.0);
+      const zoomWidthScale = Math.max(0.42, Math.min(1.05, this.dist / 0.85));
+      const ribbonW = (this.showAll5 ? 0.00095 : 0.00125) * (isCompact ? 0.82 : 1.0) * zoomWidthScale;
       const liftScale = isCompact ? 0.52 : 1.0;
 
       for (let i = 0; i < countPts; i += 1) {
         const p0 = cfg.start[i];
         const s0 = [p0[0], p0[1] + 0.012, p0[2] + 0.018];
-        markers.push(s0[0], s0[1], s0[2], this.showAll5 ? 4.8 : 6.0, 0.96, 0.98, 1.0, 0.98, 0.0);
+        markers.push(s0[0], s0[1], s0[2], this.showAll5 ? 4.0 : 4.8, 0.96, 0.98, 1.0, 0.98, 0.0);
 
         if (this.layers.baseline) {
           const pb = cfg.baseline[i];
